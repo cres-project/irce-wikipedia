@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 
+require "fileutils"
+require "digest/md5"
 require "pp"
 require "rubygems"
 require "libxml"
@@ -29,12 +31,20 @@ class MyWikipediaDumps
    end
    def on_characters( str )
       #p @context[ :state ]
-      @context[ @context[ :state ] ] = str
+      @context[ @context[ :state ] ] ||= ""
+      @context[ @context[ :state ] ] << str
    end
 
    def output
       if @context[ "ns" ] == "0"
-         puts @context[ "title" ]
+         title = @context[ "title" ]
+         puts title
+         fname = Digest::MD5.hexdigest( title ) << ".txt"
+         prefix = fname[ 0, 2 ]
+         FileUtils.mkdir( prefix ) unless File.exists? prefix
+         open( "#{prefix}/#{fname}", "w" ) do |io|
+            io.print @context[ "text" ]
+         end
       end
    end
 end
