@@ -7,10 +7,13 @@ require "pp"
 require "rubygems"
 require "libxml"
 
+require "solr.rb"
+
 class MyWikipediaDumps
    include LibXML::XML::SaxParser::Callbacks
    def initialize
       @context = {}
+      @indexer = WikipediaSolr.new
    end
    def on_start_element( element, attributes )
       #puts "Element started: #{element}"
@@ -30,9 +33,13 @@ class MyWikipediaDumps
       end
    end
    def on_characters( str )
-      #p @context[ :state ]
-      @context[ @context[ :state ] ] ||= ""
-      @context[ @context[ :state ] ] << str
+      if @context[ :state ]
+         @context[ @context[ :state ] ] ||= ""
+         @context[ @context[ :state ] ] << str
+      end
+   end
+   def on_end_document
+      @indexer.commit
    end
 
    def output
@@ -45,6 +52,8 @@ class MyWikipediaDumps
          open( "#{prefix}/#{fname}", "w" ) do |io|
             io.print @context[ "text" ]
          end
+
+	 @indexer.add @context
       end
    end
 end
