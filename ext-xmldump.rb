@@ -12,30 +12,35 @@ require "solr.rb"
 class MyWikipediaDumps
    include LibXML::XML::SaxParser::Callbacks
    def initialize
-      @context = {}
+      @context = nil
+      @attr = {}
       @indexer = WikipediaSolr.new
    end
    def on_start_element( element, attributes )
       #puts "Element started: #{element}"
-      case element
-      when "page"
-         @context = {}
-      when "title", "text", "ns"
-         @context[ :state ] = element
+      if element == "page"
+         @context = []
+	 @attr = {}
+      elsif @context
+         @context << element
       end
    end
    def on_end_element( element )
-      case element
-      when "page"
+      if element == "page"
          output
-      when "title", "text", "ns"
-         @context.delete( :state )
+	 @context = nil
+      elsif @context
+         @context.pop
       end
    end
    def on_characters( str )
-      if @context[ :state ]
-         @context[ @context[ :state ] ] ||= ""
-         @context[ @context[ :state ] ] << str
+      if @context
+         #p @context
+         case @context
+	 when [ "id" ], [ "title" ], [ "ns" ], [ "revision", "text" ]
+            @attr[ @context[-1] ] ||= ""
+            @attr[ @context[-1] ] << str
+	 end
       end
    end
    def on_end_document
@@ -43,17 +48,17 @@ class MyWikipediaDumps
    end
 
    def output
-      if @context[ "ns" ] == "0"
-         title = @context[ "title" ]
+      if @attr[ "ns" ] == "0"
+         title = @attr[ "title" ]
          puts title
          fname = Digest::MD5.hexdigest( title ) << ".txt"
          prefix = fname[ 0, 2 ]
          FileUtils.mkdir( prefix ) unless File.exists? prefix
          open( "#{prefix}/#{fname}", "w" ) do |io|
-            io.print @context[ "text" ]
+            io.print @attr[ "text" ]
          end
 
-	 @indexer.add @context
+	 @indexer.add @attr
       end
    end
 end

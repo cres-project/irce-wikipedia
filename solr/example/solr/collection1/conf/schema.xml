@@ -138,8 +138,9 @@
        "content_type": From the HTTP headers of incoming stream
        "resourcename": From SolrCell request param resource.name
    -->
+   <field name="id" type="string" indexed="true" stored="true"/>
    <field name="title" type="text_cjk" indexed="true" stored="true"/>
-   <field name="ns" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="ns" type="string" indexed="true" stored="true"/>
 
    <!-- Main body of document extracted by SolrCell.
         NOTE: This field is not indexed by default, since it is also copied to "text"
@@ -152,7 +153,7 @@
 
    <!-- catchall field, containing all other searchable text fields (implemented
         via copyField further on in this schema  -->
-   <field name="text" type="text_cjk" indexed="true" stored="false" multiValued="true"/>
+   <field name="text" type="text_cjk" indexed="true" stored="true" multiValued="true"/>
 
    <!-- catchall text field that indexes tokens both normally and in reverse for efficient
         leading wildcard queries. -->
@@ -237,7 +238,7 @@
  <!-- Field to use to determine and enforce document uniqueness. 
       Unless this field is marked with required="false", it will be a required field
    -->
- <uniqueKey>title</uniqueKey>
+ <uniqueKey>id</uniqueKey>
 
  <!-- DEPRECATED: The defaultSearchField is consulted by various query parsers when
   parsing a query string that isn't explicit about the field.  Machine (non-user)
