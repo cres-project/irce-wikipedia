@@ -34,7 +34,9 @@ module MediaWikiParser
                warn "Template file not found, skip:\t#{ parser2.cache.filename }"
             end
          end
-         html.gsub( /<a href="\//, "<a href=\"#{ linkto_baseurl }" )
+         html.gsub!( /<a href="\//, "<a href=\"#{ linkto_baseurl }" )
+	 html.gsub!( /<span class="editsection">.*?<\/span>/, '' )
+	 html
       end
    end
 end
