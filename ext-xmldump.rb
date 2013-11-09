@@ -10,6 +10,16 @@ require "libxml"
 require "solr.rb"
 
 class MyWikipediaDumps
+   class CachePage
+      attr_reader :basename, :prefix, :filename
+      def initialize( title )
+         @basename = Digest::MD5.hexdigest( title ) << ".txt"
+         @prefix = @basename[ 0, 2 ]
+         FileUtils.mkdir( @prefix ) unless File.exists? @prefix
+         @filename = File.join( @prefix, @basename )
+      end
+   end
+
    include LibXML::XML::SaxParser::Callbacks
    def initialize
       @context = nil
@@ -48,16 +58,15 @@ class MyWikipediaDumps
    end
 
    def output
+      return unless @attr[ "ns" ] == "0" or @attr[ "ns" ] == "10"
+      title = @attr[ "title" ]
+      title = "Template:#{ @attr[ "title" ] }" if @attr[ "ns" ] == "10"
+      puts title
+      cache = CachePage.new( title )
+      open( cache.filename, "w" ) do |io|
+         io.print @attr[ "text" ]
+      end
       if @attr[ "ns" ] == "0"
-         title = @attr[ "title" ]
-         puts title
-         fname = Digest::MD5.hexdigest( title ) << ".txt"
-         prefix = fname[ 0, 2 ]
-         FileUtils.mkdir( prefix ) unless File.exists? prefix
-         open( "#{prefix}/#{fname}", "w" ) do |io|
-            io.print @attr[ "text" ]
-         end
-
 	 @indexer.add @attr
       end
    end
