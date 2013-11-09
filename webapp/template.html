@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="ja">
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rev="made" href="mailto:masao@ulis.ac.jp">
+<title>Google検索
+<% if @query %>
+: <%=h @query %>
+<% end %>
+</title>
+</head>
+<body>
+<h1>Google 検索</h1>
+<form action="google.cgi" method="GET">
+<div class="form">
+<input type="text" name="key" size="50" value="<%=h @query %>">
+<input type="submit" value=" Google 検索 ">
+</div>
+</form>
+<% if @query %>
+<% if data[ :message ] %>
+<div class="search_comments"><%=h data[ :message ] %></div>
+<% end %>
+<p class="headline">
+<%= data[ :total_results ] %>件中
+<%= data[ :start ] %> - <%= data[ :end ] %>件目・・
+検索にかかった時間<%= sprintf( '%.02f', data[ :elapsed ] ) %>秒</p>
+<% count = data[ :start ] %>
+<% data[ :results ].each do |e| %>
+<dl>
+  <dt><%= count %>. <a href="<%= e.url %>"><%= if e.title.length > 0 then e.title; else e.url; end %></a></dt>
+  <dd class="snippet"><%= e.snippet %></dd>
+  <dd class="url"><a href="<%= e.url %>"><%= e.url %></a></dd>
+</dl>
+<% count += 1 %>
+<% end %>
+<p>ページ:
+</p>
+</div>
+<% else %>
+<p>「百科事典さーち」では、百科事典のコンテンツを検索して閲覧できます。</p>
+<% end %>
+<hr>
+<address>
+Project IRCE<br>
+<a href="http://cres.jpn.org">http://cres.jpn.org</a>
+</address>
+</body>
+</html>
