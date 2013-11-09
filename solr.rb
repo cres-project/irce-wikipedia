@@ -6,14 +6,23 @@ require "rsolr"
 
 class WikipediaSolr
    def initialize( url = "http://localhost:18983/solr/" )
-      @indexer = RSolr.connect( :url => url )
+      @solr = RSolr.connect( :url => url )
    end
    def add( context )
       #p context.keys
-      @indexer.add( context )
+      @solr.add( context )
    end
    def commit
-      @indexer.commit
+      @solr.commit
+   end
+
+   def search_fulltext( query )
+      result = []
+      response = @solr.get( "select", :params => {
+                               :q => query,
+                               # :rows => 1000,
+                               :fl => "* score",
+                            } )
    end
 end
 

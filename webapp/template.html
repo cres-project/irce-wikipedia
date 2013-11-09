@@ -12,9 +12,9 @@
 </head>
 <body>
 <h1>Google 検索</h1>
-<form action="google.cgi" method="GET">
+<form action="./" method="GET">
 <div class="form">
-<input type="text" name="key" size="50" value="<%=h @query %>">
+<input type="text" name="q" size="50" value="<%=h @query %>">
 <input type="submit" value=" Google 検索 ">
 </div>
 </form>
@@ -26,14 +26,15 @@
 <%= data[ :total_results ] %>件中
 <%= data[ :start ] %> - <%= data[ :end ] %>件目・・
 検索にかかった時間<%= sprintf( '%.02f', data[ :elapsed ] ) %>秒</p>
-<% count = data[ :start ] %>
-<% data[ :results ].each do |e| %>
+<% results = data[ :results ][ "response" ] %>
+<% count = results[ "start" ] %>
+<% results[ "docs" ].each do |e| %>
+<%   count += 1 %>
 <dl>
-  <dt><%= count %>. <a href="<%= e.url %>"><%= if e.title.length > 0 then e.title; else e.url; end %></a></dt>
-  <dd class="snippet"><%= e.snippet %></dd>
-  <dd class="url"><a href="<%= e.url %>"><%= e.url %></a></dd>
+  <dt><%= count %>. <a href="./browse.cgi?title=<%=u e[ "title" ] %>"><%=h e[ "title" ] %></a></dt>
+  <dd class="snippet"><%= e[ "text" ].join[ 0, 100 ] %>...</dd>
+  <dd class="url">記事: <a href="./browse.cgi?title=<%= e[ "title" ] %>"><%= e[ "title" ] %></a></dd>
 </dl>
-<% count += 1 %>
 <% end %>
 <p>ページ:
 </p>
