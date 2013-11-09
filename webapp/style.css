@@ -1,0 +1,46 @@
+@import url("../default.css");
+
+div.form { text-align: center; }
+dt { 
+  margin-top: 0.5ex; 
+  font-weight: normal;
+}
+dd {
+  text-indent: 0;
+  font-size: smaller;
+}
+dd a { text-decoration: none; }
+p.headline {
+  font-size: smaller;
+  background-color: #3366cc;
+  color: white;
+  text-align: right;
+  padding: 2px;
+}
+
+p.message { 
+  text-align: center;
+  font-size: larger;
+  color: #f22;
+  text-decoration: underline;
+}
+
+dl.wordlist {
+  margin-left: 5%;
+  border-left: thick solid silver;
+  border-bottom: thin solid gray;
+  padding-left: 10px;
+}
+dl.wordlist dt {
+  font-size: medium;
+  font-weight: bold;
+}
+dl.wordlist dd a {
+  text-decoration: underline;
+}
+
+span.term-name {
+  font-weight: normal;
+  font-size: smaller;
+  color: #3c3;
+}

@@ -11,12 +11,12 @@ require "solr.rb"
 
 class MyWikipediaDumps
    class CachePage
+      DIRNAME = File.dirname( __FILE__ )
       attr_reader :basename, :prefix, :filename
       def initialize( title )
          @basename = Digest::MD5.hexdigest( title ) << ".txt"
          @prefix = @basename[ 0, 2 ]
-         FileUtils.mkdir( @prefix ) unless File.exists? @prefix
-         @filename = File.join( @prefix, @basename )
+         @filename = File.join( DIRNAME, @prefix, @basename )
       end
    end
 
@@ -63,6 +63,8 @@ class MyWikipediaDumps
       title = "Template:#{ @attr[ "title" ] }" if @attr[ "ns" ] == "10"
       puts title
       cache = CachePage.new( title )
+      cache_dirname = File.dirname( cache.filename )
+      FileUtils.mkdir( cache_dirname ) unless File.exists? cache_dirname
       open( cache.filename, "w" ) do |io|
          io.print @attr[ "text" ]
       end

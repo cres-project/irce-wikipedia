@@ -20,26 +20,27 @@ module MediaWikiParser
          @parser = WikiParser.new
          @cache = MyWikipediaDumps::CachePage.new( title )
       end
-      def to_html
-         wikitext = parser.html_from_file( cache.filename )
+      def to_html( linkto_baseurl = "" )
+         html = parser.html_from_file( cache.filename )
          templates = @parser.templates
          templates.each do |template|
             #STDERR.puts templates.inspect
             parser2 = self.class.new( "Template:#{ template[:name] }" )
-            #p 
+            #p
             if File.exist? parser2.cache.filename
-               wikitext.gsub! /#{ template[:replace_tag] }/, parser2.to_html
+               html.gsub! /#{ template[:replace_tag] }/, parser2.to_html
             else
-               wikitext.gsub! /#{ template[:replace_tag] }/, ""
+               html.gsub! /#{ template[:replace_tag] }/, ""
                warn "Template file not found, skip:\t#{ parser2.cache.filename }"
             end
          end
-         wikitext
+         html.gsub( /<a href="\//, "<a href=\"#{ linkto_baseurl }" )
       end
    end
 end
 
 if $0 == __FILE__
-   parser = MediaWikiParser::Kiwi.new( "言語" )
+   title = ARGV[0] || "言語"
+   parser = MediaWikiParser::Kiwi.new( title )
    puts parser.to_html
 end
