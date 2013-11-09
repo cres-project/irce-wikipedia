@@ -10,17 +10,8 @@ body {
 h1.logo {
   text-align: center;
 }
-
 div.form { text-align: center; }
-dt { 
-  margin-top: 0.5ex; 
-  font-weight: normal;
-}
-dd {
-  text-indent: 0;
-  font-size: smaller;
-}
-dd a { text-decoration: none; }
+
 p.headline {
   font-size: smaller;
   background-color: #3366cc;
@@ -28,7 +19,6 @@ p.headline {
   text-align: right;
   padding: 2px;
 }
-
 p.message { 
   text-align: center;
   font-size: larger;
@@ -36,3 +26,14 @@ p.message {
   text-decoration: underline;
 }
 
+dl.search_results dt {
+  margin-top: 0.5ex; 
+  font-weight: normal;
+}
+dl.search_results dd {
+  text-indent: 0;
+  font-size: smaller;
+}
+dl.search_results dd a {
+  text-decoration: none;
+}
