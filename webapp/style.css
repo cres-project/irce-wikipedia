@@ -1,4 +1,15 @@
-@import url("../default.css");
+@import "https://bits.wikimedia.org/ja.wikipedia.org/load.php?debug=false&lang=ja&modules=ext.gadget.Navigation_popups%2CReferenceTooltips%2CWikiMiniAtlas%2CmySandbox%7Cext.rtlcite%2Cwikihiero%7Cext.uls.nojs%7Cext.visualEditor.viewPageTarget.noscript%7Cmediawiki.legacy.commonPrint%2Cshared%7Cmw.PopUpMediaTransform%7Cskins.vector&only=styles&skin=vector&*";
+@import "https://bits.wikimedia.org/ja.wikipedia.org/load.php?debug=false&lang=ja&modules=site&only=styles&skin=vector&*";
+
+body { 
+  width: 90%; 
+  margin-left: 2%;
+  margin-right: 2%;
+  background-color: white;
+}
+h1.logo {
+  text-align: center;
+}
 
 div.form { text-align: center; }
 dt { 
@@ -25,22 +36,3 @@ p.message {
   text-decoration: underline;
 }
 
-dl.wordlist {
-  margin-left: 5%;
-  border-left: thick solid silver;
-  border-bottom: thin solid gray;
-  padding-left: 10px;
-}
-dl.wordlist dt {
-  font-size: medium;
-  font-weight: bold;
-}
-dl.wordlist dd a {
-  text-decoration: underline;
-}
-
-span.term-name {
-  font-weight: normal;
-  font-size: smaller;
-  color: #3c3;
-}
