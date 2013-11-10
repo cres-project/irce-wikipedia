@@ -11,12 +11,23 @@ require "yapwtp.rb"
 
 module MediaWikiParser
    class Base
-      attr_reader :parser, :cache
+      Namespace_name = {
+         "" => "",
+         "-2" => "Media", "-1" => "Special", "0" => "",
+         "2"  => "User", "4" => "Wikipedia", "6" => "File",
+         "8" => "MediaWiki", "10" => "Template", "12" => "Help",
+         "14" => "Category",
+	 "1" => "Talk", "3" => "User talk", "5" => "Wikipedia talk",
+	 "9" => "MediaWiki talk", "11" => "Template talk", "13" => "Help talk",
+	 "15" => "Category talk",
+      }
+      attr_reader :parser, :cache, :title
       def initialize( title ); end
       def to_html; end
    end
    class Kiwi < Base
       def initialize( title )
+         @title = title
          @parser = WikiParser.new
          @cache = MyWikipediaDumps::CachePage.new( title )
       end
@@ -25,12 +36,24 @@ module MediaWikiParser
          templates = @parser.templates
          templates.each do |template|
             #STDERR.puts templates.inspect
-            parser2 = self.class.new( "Template:#{ template[:name] }" )
-            if File.exist? parser2.cache.filename
-               html.gsub!( template[:replace_tag], parser2.to_html )
+            case template[ :name ]
+            when "PAGENAME"
+               html.gsub!( template[ :replace_tag ], @title )
+            when /DEFAULTSORT:/
+               html.gsub!( template[ :replace_tag ], "" )
+            when /ns:(\w+)/
+	       #STDERR.puts [ $1, Namespace_name[ $1.to_s ] ].inspect
+               html.gsub!( template[ :replace_tag ], Namespace_name[ $1.to_s ] )
             else
-               html.gsub!( template[:replace_tag], "" )
-               warn "Template file not found, skip:\t#{ parser2.cache.filename }"
+               template_title = template[ :name ].strip
+               template_title.sub!( /\A(.)/ ){|e| e.upcase }
+               parser2 = self.class.new( "Template:#{ template_title }" )
+               if File.exist? parser2.cache.filename
+                  html.gsub!( template[ :replace_tag ], parser2.to_html )
+               else
+                  html.gsub!( template[ :replace_tag ], "" )
+                  warn "Template file not found, skip:\t{{#{ template_title }}}, #{ parser2.cache.filename }"
+               end
             end
          end
          html.gsub!( /<a href="\//, "<a href=\"#{ linkto_baseurl }" )
