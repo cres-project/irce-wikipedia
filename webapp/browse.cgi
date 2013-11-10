@@ -8,7 +8,7 @@ $:.push File.dirname(__FILE__)
 require "index.rb"
 
 $:.push File.join( File.dirname(__FILE__), ".." )
-require "ext-kiwi.rb"
+require "mediawiki-parser.rb"
 
 module WebApp
    class WikipediaBrowse < Base
