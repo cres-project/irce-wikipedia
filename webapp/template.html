@@ -3,7 +3,12 @@
 <html lang="ja">
 <head>
 <link rel="stylesheet" href="style.css" type="text/css">
-<title>百科事典サーチ
+<title>
+<% if @title %>
+<%=h @title %>
+-
+<% end %>
+百科事典サーチ
 <% if @query %>
 : <%=h @query %>
 <% end %>
@@ -38,13 +43,18 @@
 <p>ページ:
 </p>
 </div>
+<% elsif @title %>
+<h1><%=h @title %></h1>
+<%= data[ :body ] %>
 <% else %>
 <p>「百科事典さーち」では、百科事典のコンテンツを検索して閲覧できます。</p>
 <% end %>
+<div id="footer">
 <hr>
 <address>
 Project IRCE<br>
 <a href="http://cres.jpn.org">http://cres.jpn.org</a>
 </address>
+</div>
 </body>
 </html>

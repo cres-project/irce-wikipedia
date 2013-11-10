@@ -29,7 +29,7 @@ begin
       data[ :body ] = parser.to_html( "?title=" )
    end
    print cgi.header( "text/html; charset=utf-8" )
-   print app.to_html( data, "wikipedia.html" )
+   print app.to_html( data, "template.html" )
 rescue
    print "Content-Type: text/plain\r\n\r\n"
    puts "#$! (#{$!.class})"

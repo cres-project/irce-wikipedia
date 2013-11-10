@@ -12,6 +12,13 @@ h1.logo {
 }
 div.form { text-align: center; }
 
+div#footer {
+  text-align: right;
+  margin-top: 2em;
+  margin-left: 0px;
+  padding: 0px;
+}
+
 p.headline {
   font-size: smaller;
   background-color: #3366cc;
