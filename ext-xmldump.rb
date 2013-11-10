@@ -60,7 +60,6 @@ class MyWikipediaDumps
    def output
       return unless @attr[ "ns" ] == "0" or @attr[ "ns" ] == "10"
       title = @attr[ "title" ]
-      title = "Template:#{ @attr[ "title" ] }" if @attr[ "ns" ] == "10"
       puts title
       cache = CachePage.new( title )
       cache_dirname = File.dirname( cache.filename )
