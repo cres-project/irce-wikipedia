@@ -26,11 +26,10 @@ module MediaWikiParser
          templates.each do |template|
             #STDERR.puts templates.inspect
             parser2 = self.class.new( "Template:#{ template[:name] }" )
-            #p
             if File.exist? parser2.cache.filename
-               html.gsub! /#{ template[:replace_tag] }/, parser2.to_html
+               html.gsub!( template[:replace_tag], parser2.to_html )
             else
-               html.gsub! /#{ template[:replace_tag] }/, ""
+               html.gsub!( template[:replace_tag], "" )
                warn "Template file not found, skip:\t#{ parser2.cache.filename }"
             end
          end
