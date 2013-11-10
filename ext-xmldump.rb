@@ -75,6 +75,7 @@ class MyWikipediaDumps
       end
       @count[ @attr[ "ns" ] ] ||= 0
       @count[ @attr[ "ns" ] ] += 1
+      @indexer.commit if @count.values.inject(:+) % 10000 == 0
    end
 end
 
