@@ -22,6 +22,7 @@ class MyWikipediaDumps
 
    include LibXML::XML::SaxParser::Callbacks
    def initialize
+      @count = {}
       @context = nil
       @attr = {}
       @indexer = WikipediaSolr.new
@@ -55,6 +56,8 @@ class MyWikipediaDumps
    end
    def on_end_document
       @indexer.commit
+      puts "Indexed:"
+      pp @count
    end
 
    def output
@@ -70,6 +73,8 @@ class MyWikipediaDumps
       if @attr[ "ns" ] == "0"
 	 @indexer.add @attr
       end
+      @count[ @attr[ "ns" ] ] ||= 0
+      @count[ @attr[ "ns" ] ] += 1
    end
 end
 
