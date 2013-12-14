@@ -10,20 +10,8 @@ $:.push File.join( File.dirname( __FILE__ ), ".." )
 require "solr.rb"
 
 module WebApp
-   class Base
-      def to_html( data, template = "template.html" )
-         eval_rhtml( template, binding )
-      end
-
-      include ERB::Util
-      def eval_rhtml( fname, binding )
-         rhtml = open( fname ){|io| io.read }
-         result = ERB::new( rhtml, $SAFE, "<>" ).result( binding )
-      end
-   end
-
-   class WikipediaSearch < Base
-      TITLE = "百科事典サーチ"
+   class WikipediaSearch
+      TITLE = "百科事典サーチ ircepedia"
       attr_reader :query, :page
       def initialize( cgi )
          @cgi = cgi
@@ -33,6 +21,15 @@ module WebApp
       def search
          solr = WikipediaSolr.new
          result = solr.search_fulltext( @query )
+      end
+
+      def to_html( data, template = "template.html" )
+         eval_rhtml( template, binding )
+      end
+      include ERB::Util
+      def eval_rhtml( fname, binding )
+         rhtml = open( fname ){|io| io.read }
+         result = ERB::new( rhtml, $SAFE, "<>" ).result( binding )
       end
    end
 end
