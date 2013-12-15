@@ -70,9 +70,14 @@ class MyWikipediaDumps
       open( cache.filename, "w" ) do |io|
          io.print @attr[ "text" ]
       end
-      if @attr[ "ns" ] == "0"
-	 @indexer.add @attr
+      if @attr[ "text" ] =~ /\A#(REDIRECT|転送)\s*\[\[(.+?)(#.+)?\]\]/i
+         open( "redirects.txt", "a" ) do |io|
+            io.puts [ title, $2 ].join( "\t" )
+         end
       end
+      #if @attr[ "ns" ] == "0"
+      #	 @indexer.add @attr
+      #end
       @count[ @attr[ "ns" ] ] ||= 0
       @count[ @attr[ "ns" ] ] += 1
       @indexer.commit if @count.values.inject(:+) % 10000 == 0

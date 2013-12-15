@@ -10,41 +10,34 @@ require "solr.rb"
 
 require "ext-xmldump.rb"
 
-class MyWikipediaDumps
-   def output
-      if @attr[ "ns" ] == "0"
-         title = @attr[ "title" ]
-         puts title
-         fname = Digest::MD5.hexdigest( title ) << ".txt"
-         prefix = fname[ 0, 2 ]
-         FileUtils.mkdir( prefix ) unless File.exists? prefix
-         open( "#{prefix}/#{fname}", "w" ) do |io|
-            io.print @attr[ "text" ]
-         end
-
-	 @indexer.add @attr
+if $0 == __FILE__
+   redirects = {}
+   open( "redirects.txt" ) do |io|
+      io.each do |line|
+         redir_from, redir_to, = line.chomp.split( /\t/ )
+	 redirects[ redir_to ] ||= []
+	 redirects[ redir_to ] << redir_from
       end
    end
-end
-
-if $0 == __FILE__
-   #parser = LibXML::XML::Parser.io( ARGF )
-   parser = LibXML::XML::SaxParser.io( ARGF )
-   parser.callbacks = MyWikipediaDumps.new
-   parser.parse
-   #doc = parser.parse
-   #doc.root.namespaces.default_prefix = 'mw'
-   #pages = doc.find( "//mw:page" )
-   #puts pages.size
-
-#    pages.each do |page|
-#       namespace = page.find( "./mw:ns" )[0].content.to_i
-#       title = page.find( "./mw:title" )[0].content
-#       unless namespace != 0
-#          STDERR.puts title
-#          next
-#       end
-#       text = page.find( ".//mw:text" )[0].content
-#       puts [ title, text.size ].join( "\t" )
-#    end
+   STDERR.puts "reading redirects done. #{ redirects.keys.size } redirects loaded."
+   indexer = WikipediaSolr.new
+   count = 0
+   ARGF.each do |line|
+      data = {}
+      title = line.chomp.gsub( /_/, " " )
+      cache = MyWikipediaDumps::CachePage.new( title )
+      if not File.exist? cache.filename
+         puts "#{ title } skip"
+	 next
+      end
+      text = open( cache.filename ){|io| io.read }
+      data = {
+        :title => title,
+	:text => text,
+	:redirects => redirects[ title ],
+      }
+      indexer.add data
+      count += 1
+      indexer.commit if count % 10000 == 0
+   end
 end
