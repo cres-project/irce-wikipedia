@@ -31,32 +31,50 @@ module MediaWikiParser
          @parser = WikiParser.new
          @cache = MyWikipediaDumps::CachePage.new( title )
       end
-      def to_html( linkto_baseurl = "" )
-         html = parser.html_from_file( cache.filename )
+      def to_html( options = {} )
+         # linkto_baseurl = "", no_expand_template = false, include = false,
+	 html = nil
+	 if options[ :include ]
+            text = open( cache.filename ){|io| io.read }
+	    if text =~ /<onlyinclude>(.*?)<\/onlyinclude>/mo
+	       text = $1.dup
+	    end
+	    text.gsub!( /<noinclude>.*?<\/noinclude>/mo, "" )
+	    text.gsub!( /<\/?includeonly>/mo, "" )
+	    p text
+	    html = parser.html_from_string( text )
+	 else
+            html = parser.html_from_file( cache.filename )
+	 end
          templates = @parser.templates
          templates.each do |template|
-            #STDERR.puts templates.inspect
-            case template[ :name ]
-            when "PAGENAME"
-               html.gsub!( template[ :replace_tag ], @title )
-            when /DEFAULTSORT:/
+            STDERR.puts template.inspect
+            if options[ :no_expand_template ] 
                html.gsub!( template[ :replace_tag ], "" )
-            when /ns:(\w+)/
-	       #STDERR.puts [ $1, Namespace_name[ $1.to_s ] ].inspect
-               html.gsub!( template[ :replace_tag ], Namespace_name[ $1.to_s ] )
-            else
-               template_title = template[ :name ].strip
-               template_title.sub!( /\A(.)/ ){|e| e.upcase }
-               parser2 = self.class.new( "Template:#{ template_title }" )
-               if File.exist? parser2.cache.filename
-                  html.gsub!( template[ :replace_tag ], parser2.to_html )
-               else
+	    else
+               case template[ :name ]
+               when "PAGENAME"
+                  html.gsub!( template[ :replace_tag ], @title )
+               when /DEFAULTSORT:/
                   html.gsub!( template[ :replace_tag ], "" )
-                  warn "Template file not found, skip:\t{{#{ template_title }}}, #{ parser2.cache.filename }"
+               when /ns:(\w+)/
+                  #STDERR.puts [ $1, Namespace_name[ $1.to_s ] ].inspect
+                  html.gsub!( template[ :replace_tag ], Namespace_name[ $1.to_s ] )
+               else
+                  template_title = template[ :name ].strip
+                  template_title.sub!( /\A(.)/ ){|e| e.upcase }
+                  parser2 = self.class.new( "Template:#{ template_title }" )
+		  options2 = options.merge( { :include => true } )
+                  if File.exist? parser2.cache.filename
+                     html.gsub!( template[ :replace_tag ], parser2.to_html( options2 ) )
+                  else
+                     html.gsub!( template[ :replace_tag ], "" )
+                     warn "Template file not found, skip:\t{{#{ template_title }}}, #{ parser2.cache.filename }"
+                  end
                end
             end
          end
-         html.gsub!( /<a href="\//, "<a href=\"#{ linkto_baseurl }" )
+         html.gsub!( /<a href="\//, "<a href=\"#{ options[ :baseurl ] }" ) if options[ :baseurl ]
 	 html.gsub!( /<span class="editsection">.*?<\/span>/, '' )
 	 html
       end

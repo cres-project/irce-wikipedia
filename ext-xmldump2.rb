@@ -9,6 +9,41 @@ require "libxml"
 require "solr.rb"
 
 require "ext-xmldump.rb"
+require "mediawiki-parser.rb"
+
+class MyWikipediaDumps
+   class Indexer
+      def initialize( redirects )
+         @indexer = WikipediaSolr.new
+	 @redirects = redirects
+      end
+      def index( title )
+         cache = MyWikipediaDumps::CachePage.new( title )
+         if not File.exist? cache.filename
+            puts "[#{ title }] skip"
+            next
+         end
+         text = open( cache.filename ){|io| io.read }
+         if text =~ MyWikipediaDumps::REDIRECT_REGEXP
+            puts "[#{ title }] redirect, skip"
+            next
+         end
+         parser = MediaWikiParser::Kiwi.new( title )
+         html = parser.to_html( :no_expand_template => true )
+         highlight_text = html.gsub( /<[^>]*>/i, "" )
+         data = {
+            :title => title,
+            :text => text,
+            :highlight_text => highlight_text,
+            :redirects => @redirects[ title ],
+         }
+         @indexer.add data
+      end
+      def commit
+         @indexer.commit
+      end
+   end
+end
 
 if $0 == __FILE__
    redirects = {}
@@ -20,28 +55,12 @@ if $0 == __FILE__
       end
    end
    STDERR.puts "reading redirects done. #{ redirects.keys.size } redirects loaded."
-   indexer = WikipediaSolr.new
+   indexer = MyWikipediaDumps::Indexer.new( redirects )
    count = 0
    ARGF.each do |line|
-      data = {}
       title = line.chomp.gsub( /_/, " " )
-      cache = MyWikipediaDumps::CachePage.new( title )
-      if not File.exist? cache.filename
-         puts "[#{ title }] skip"
-	 next
-      end
-      text = open( cache.filename ){|io| io.read }
-      if text =~ MyWikipediaDumps::REDIRECT_REGEXP
-         puts "[#{ title }] redirect, skip"
-         next
-      end
-      data = {
-        :title => title,
-	:text => text,
-	:redirects => redirects[ title ],
-      }
-      indexer.add data
+      indexer.index( title )
       count += 1
-      indexer.commit if count % 10000 == 0
+      indexer.commit if count % 1000 == 0
    end
 end
