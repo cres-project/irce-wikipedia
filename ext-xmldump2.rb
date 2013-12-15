@@ -27,10 +27,14 @@ if $0 == __FILE__
       title = line.chomp.gsub( /_/, " " )
       cache = MyWikipediaDumps::CachePage.new( title )
       if not File.exist? cache.filename
-         puts "#{ title } skip"
+         puts "[#{ title }] skip"
 	 next
       end
       text = open( cache.filename ){|io| io.read }
+      if text =~ MyWikipediaDumps::REDIRECT_REGEXP
+         puts "[#{ title }] redirect, skip"
+         next
+      end
       data = {
         :title => title,
 	:text => text,
