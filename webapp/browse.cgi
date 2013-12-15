@@ -26,7 +26,7 @@ begin
    data = {}
    if app.title
       parser = MediaWikiParser::Kiwi.new( app.title )
-      data[ :body ] = parser.to_html( "?title=" )
+      data[ :body ] = parser.to_html( :baseurl => "?title=" )
    end
    print cgi.header( "text/html; charset=utf-8" )
    print app.to_html( data, "template.html" )
