@@ -139,7 +139,7 @@
        "resourcename": From SolrCell request param resource.name
    -->
    <field name="id" type="string" indexed="true" stored="true"/>
-   <field name="title" type="text_cjk" indexed="true" stored="true"/>
+   <field name="title" type="string" indexed="true" stored="true"/>
    <field name="ns" type="string" indexed="true" stored="true"/>
    <field name="redirects" type="string" indexed="true" stored="true" multiValued="true"/>
 
