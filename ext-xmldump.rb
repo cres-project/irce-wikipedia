@@ -10,6 +10,7 @@ require "libxml"
 require "solr.rb"
 
 class MyWikipediaDumps
+   REDIRECT_REGEXP = /\A#(REDIRECT|転送)\s*\[\[(.+)\]\]/i
    class CachePage
       DIRNAME = File.dirname( __FILE__ )
       attr_reader :basename, :prefix, :filename
@@ -70,9 +71,9 @@ class MyWikipediaDumps
       open( cache.filename, "w" ) do |io|
          io.print @attr[ "text" ]
       end
-      if @attr[ "text" ] =~ /\A#(REDIRECT|転送)\s*\[\[(.+?)(#.+)?\]\]/i
+      if @attr[ "text" ] =~ REDIRECT_REGEXP
          open( "redirects.txt", "a" ) do |io|
-            io.puts [ title, $2 ].join( "\t" )
+            io.puts [ title, $1 ].join( "\t" )
          end
       end
       #if @attr[ "ns" ] == "0"
