@@ -41,15 +41,15 @@ module MediaWikiParser
 	    end
 	    text.gsub!( /<noinclude>.*?<\/noinclude>/mo, "" )
 	    text.gsub!( /<\/?includeonly>/mo, "" )
-	    p text
+	    #p text
 	    html = parser.html_from_string( text )
 	 else
             html = parser.html_from_file( cache.filename )
 	 end
          templates = @parser.templates
          templates.each do |template|
-            STDERR.puts template.inspect
-            if options[ :no_expand_template ] 
+            #STDERR.puts template.inspect
+            if options[ :no_expand_template ]
                html.gsub!( template[ :replace_tag ], "" )
 	    else
                case template[ :name ]
