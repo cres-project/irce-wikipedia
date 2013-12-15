@@ -155,6 +155,7 @@
    <!-- catchall field, containing all other searchable text fields (implemented
         via copyField further on in this schema  -->
    <field name="text" type="text_cjk" indexed="true" stored="true" multiValued="true"/>
+   <field name="highlight_text" type="text_cjk" indexed="false" stored="true" />
 
    <!-- catchall text field that indexes tokens both normally and in reverse for efficient
         leading wildcard queries. -->
