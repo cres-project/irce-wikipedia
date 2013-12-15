@@ -20,13 +20,13 @@ class MyWikipediaDumps
       def index( title )
          cache = MyWikipediaDumps::CachePage.new( title )
          if not File.exist? cache.filename
-            puts "[#{ title }] skip"
-            next
+            puts "[#{ title }] not found, skip"
+            return
          end
          text = open( cache.filename ){|io| io.read }
          if text =~ MyWikipediaDumps::REDIRECT_REGEXP
             puts "[#{ title }] redirect, skip"
-            next
+            return
          end
          parser = MediaWikiParser::Kiwi.new( title )
          html = parser.to_html( :no_expand_template => true )
