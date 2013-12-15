@@ -30,7 +30,9 @@ class MyWikipediaDumps
          end
          parser = MediaWikiParser::Kiwi.new( title )
          html = parser.to_html( :no_expand_template => true )
-         highlight_text = html.gsub( /<[^>]*>/i, "" )
+         html.sub!( /<div id="toctitle">Contents<\/div>/o, "" )
+         html.sub!( /<div id="toc".*?<\/div>/mo, "" )
+         highlight_text = html.gsub( /<[^>]*>/i, "" ).strip
          data = {
             :title => title,
             :text => text,
