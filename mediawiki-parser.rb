@@ -45,9 +45,15 @@ module MediaWikiParser
 	    text.gsub!( /<\/?includeonly>/mo, "" )
 	    #p text
 	 end
+         if options[ :no_expand_template ]	# strip templates.
+	    while( text.gsub!( /\{\{\{[^\{\}]*\}\}\}/mo, "" ) or text.gsub!( /\{\{[^\{\}]*\}\}/mo, "" ) )
+            end
+            #text.gsub!( /\{\{\{[^\{\}]*\}\}\}/mo, "" )
+            #text.gsub!( /\{\{[^\{\}]*\}\}/mo, "" )
+         end
 	 if options[ :ignore_bold ]
-	    text.gsub!( /'''/, "" )
-	    text.gsub!( /''/, "" )
+	    text.gsub!( /'''/o, "" )
+            text.gsub!( /''/o, "" )
 	 end
 	 html = parser.html_from_string( text )
          templates = @parser.templates
@@ -88,5 +94,5 @@ end
 if $0 == __FILE__
    title = ARGV[0] || "言語"
    parser = MediaWikiParser::Kiwi.new( title )
-   puts parser.to_html( :ignore_bold => true )
+   puts parser.to_html( :ignore_bold => true, :no_expand_template => true )
 end
