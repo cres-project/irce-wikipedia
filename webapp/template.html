@@ -42,8 +42,9 @@
   <dd class="url">記事: <a href="./browse.cgi?title=<%= e[ "title" ] %>"><%= e[ "title" ] %></a></dd>
 <% end %>
 </dl>
-<p>ページ:
-</p>
+<% if @query %>
+<%= paginate %>
+<% end %>
 </div>
 <% elsif @title %>
 <h1><%=h @title %></h1>

@@ -49,3 +49,12 @@ em {
   font-style: normal;
   font-weight: bold;
 }
+
+div.paginate {
+  margin: 2ex 4em 1ex;
+}
+div.paginate span.page {
+  border: 1px solid #444;
+  padding: 10px;
+  margin: 2px;
+}
