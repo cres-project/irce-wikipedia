@@ -65,4 +65,5 @@ if $0 == __FILE__
       count += 1
       indexer.commit if count % 1000 == 0
    end
+   indexer.commit
 end
