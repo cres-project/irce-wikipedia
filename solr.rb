@@ -22,6 +22,8 @@ class WikipediaSolr
                                :q => query,
                                # :rows => 1000,
                                :fl => "* score",
+                               :hl => true,
+                               :"hl.fl" => "highlight_text",
                             } )
    end
 end

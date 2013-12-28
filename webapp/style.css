@@ -44,3 +44,8 @@ dl.search_results dd {
 dl.search_results dd a {
   text-decoration: none;
 }
+
+em {
+  font-style: normal;
+  font-weight: bold;
+}

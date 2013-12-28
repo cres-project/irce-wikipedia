@@ -31,12 +31,14 @@
 <%= data[ :start ] %> - <%= data[ :end ] %>件目・・
 検索にかかった時間<%= sprintf( '%.02f', data[ :elapsed ] ) %>秒</p>
 <% results = data[ :results ][ "response" ] %>
+<% highlighting = data[ :results ][ "highlighting" ] %>
 <% count = results[ "start" ] %>
 <dl class="search_results">
 <% results[ "docs" ].each do |e| %>
+<%   snippet = highlighting[ e["title"] ] or e %>
 <%   count += 1 %>
   <dt><%= count %>. <a href="./browse.cgi?title=<%=u e[ "title" ] %>"><%=h e[ "title" ] %></a></dt>
-  <dd class="snippet"><%= e[ "text" ].join[ 0, 100 ] %>...</dd>
+  <dd class="snippet"><%= snippet[ "highlight_text" ] %>...</dd>
   <dd class="url">記事: <a href="./browse.cgi?title=<%= e[ "title" ] %>"><%= e[ "title" ] %></a></dd>
 <% end %>
 </dl>
