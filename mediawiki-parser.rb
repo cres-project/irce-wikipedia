@@ -30,22 +30,26 @@ module MediaWikiParser
          @title = title
          @parser = WikiParser.new
          @cache = MyWikipediaDumps::CachePage.new( title )
+         #STDERR.puts "#{ self.class } initialized."
       end
       def to_html( options = {} )
          # linkto_baseurl = "", no_expand_template = false, include = false,
 	 html = nil
+         #p @title
+         text = open( cache.filename ){|io| io.read }
 	 if options[ :include ]
-            text = open( cache.filename ){|io| io.read }
 	    if text =~ /<onlyinclude>(.*?)<\/onlyinclude>/mo
 	       text = $1.dup
 	    end
 	    text.gsub!( /<noinclude>.*?<\/noinclude>/mo, "" )
 	    text.gsub!( /<\/?includeonly>/mo, "" )
 	    #p text
-	    html = parser.html_from_string( text )
-	 else
-            html = parser.html_from_file( cache.filename )
 	 end
+	 if options[ :ignore_bold ]
+	    text.gsub!( /'''/, "" )
+	    text.gsub!( /''/, "" )
+	 end
+	 html = parser.html_from_string( text )
          templates = @parser.templates
          templates.each do |template|
             #STDERR.puts template.inspect
@@ -84,5 +88,5 @@ end
 if $0 == __FILE__
    title = ARGV[0] || "言語"
    parser = MediaWikiParser::Kiwi.new( title )
-   puts parser.to_html
+   puts parser.to_html( :ignore_bold => true )
 end

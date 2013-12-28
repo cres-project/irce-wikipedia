@@ -32,5 +32,11 @@ describe "mediawiki-parser.rb" do
             html = parser.to_html
          }.should_not raise_error
       end
+      it "should parse properly a page text. (1963-1964シーズンのNBA)" do
+         parser = MediaWikiParser::Kiwi.new "1963-1964シーズンのNBA"
+         proc {
+            html = parser.to_html( :ignore_bold => true )
+         }.should_not raise_error
+      end
    end
 end
