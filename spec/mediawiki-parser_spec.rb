@@ -38,5 +38,11 @@ describe "mediawiki-parser.rb" do
             html = parser.to_html( :ignore_bold => true )
          }.should_not raise_error
       end
+      it "should parse properly a page text. (CHAGE_and_ASKAのコンサート一覧)" do
+         parser = MediaWikiParser::Kiwi.new "CHAGE and ASKAのコンサート一覧"
+         proc {
+            html = parser.to_html( :ignore_bold => true )
+         }.should_not raise_error
+      end
    end
 end
