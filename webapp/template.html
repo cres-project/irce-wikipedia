@@ -26,13 +26,13 @@
 <% if data[ :message ] %>
 <div class="search_comments"><%=h data[ :message ] %></div>
 <% end %>
-<p class="headline">
-<%= data[ :total_results ] %>件中
-<%= data[ :start ] %> - <%= data[ :end ] %>件目・・
-検索にかかった時間<%= sprintf( '%.02f', data[ :elapsed ] ) %>秒</p>
 <% results = data[ :results ][ "response" ] %>
 <% highlighting = data[ :results ][ "highlighting" ] %>
 <% count = results[ "start" ] %>
+<p class="headline">
+<%= results[ "numFound" ] %>件中
+<%= results[ "start" ] + 1 %> - <%= results[ "start" ] + 10 %>件目・・
+検索にかかった時間<%= sprintf( '%.02f', data[ :elapsed ] ) %>秒</p>
 <dl class="search_results">
 <% results[ "docs" ].each do |e| %>
 <%   snippet = highlighting[ e["title"] ] or e %>
