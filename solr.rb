@@ -16,16 +16,17 @@ class WikipediaSolr
       @solr.commit
    end
 
-   def search_fulltext( query, start = 0 )
+   def search_fulltext( query, opts = {} )
       result = []
-      response = @solr.get( "select", :params => {
-                               :q => query,
-                               # :rows => 1000,
-                               :start => start,
-                               :fl => "* score",
-                               :hl => true,
-                               :"hl.fl" => "highlight_text",
-                            } )
+      params = {
+         :q => query,
+         # :rows => 1000,
+         :fl => "* score",
+         :hl => true,
+         :"hl.fl" => "highlight_text",
+      }
+      params.update( opts )
+      response = @solr.get( "select", :params => params )
    end
 end
 

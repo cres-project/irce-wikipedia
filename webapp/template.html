@@ -42,15 +42,19 @@
   <dd class="url">記事: <a href="./browse.cgi?title=<%= e[ "title" ] %>"><%= e[ "title" ] %></a></dd>
 <% end %>
 </dl>
-<% if @query %>
 <%= paginate %>
-<% end %>
-</div>
 <% elsif @title %>
 <h1><%=h @title %></h1>
 <%= data[ :body ] %>
 <% else %>
 <p>「百科事典サーチircepedia」では、百科事典のコンテンツを検索して閲覧できます。</p>
+<p>記事の例:</p>
+<ul>
+<% results = data[ :results ][ "response" ] %>
+<% results[ "docs" ].each do |e| %>
+  <li><a href="browse.cgi?title=<%=h e[ "title" ] %>"><%=h e[ "title" ] %></a>
+<% end %>
+</ul>
 <% end %>
 <div id="footer">
 <hr>

@@ -31,7 +31,12 @@ module WebApp
       end
       def search
          solr = WikipediaSolr.new
-         result = solr.search_fulltext( @query, @page * @per_page )
+         result = solr.search_fulltext( @query, { :start => @page * @per_page } )
+      end
+      def search_random
+         seed = Time.now.to_i
+         solr = WikipediaSolr.new
+         result = solr.search_fulltext( "*:*", { :sort => "random_#{ seed } desc" } )
       end
       def per_page=( n )
          @per_page = n
