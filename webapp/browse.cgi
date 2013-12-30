@@ -25,7 +25,8 @@ begin
    app = WebApp::WikipediaBrowse.new( cgi )
    data = {}
    if app.title
-      parser = MediaWikiParser::Kiwi.new( app.title )
+      parser = MediaWikiParser::Cmdline.new( app.title )
+      #parser = MediaWikiParser::Kiwi.new( app.title )
       data[ :body ] = parser.to_html( :baseurl => "?title=" )
    end
    print cgi.header( "text/html; charset=utf-8" )

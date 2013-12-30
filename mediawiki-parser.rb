@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 require "pp"
+require "open3"
 
 $:.push File.join( File.dirname(__FILE__), ".." )
 require "ext-xmldump.rb"
@@ -25,6 +26,7 @@ module MediaWikiParser
       def initialize( title ); end
       def to_html; end
    end
+
    class Kiwi < Base
       def initialize( title )
          @title = title
@@ -87,6 +89,19 @@ module MediaWikiParser
          html.gsub!( /<a href="\//, "<a href=\"#{ options[ :baseurl ] }" ) if options[ :baseurl ]
 	 html.gsub!( /<span class="editsection">.*?<\/span>/, '' )
 	 html
+      end
+   end
+
+   class Cmdline < Kiwi
+      BASEDIR = File.join( File.dirname(__FILE__), "..", "mediawiki", "maintenance" )
+      def to_html( base_url )
+         ENV.delete "REQUEST_METHOD"
+         text = open( cache.filename ){|io| io.read }
+         pin, pout, perr = *Open3.popen3( "php " << File.join( BASEDIR, "parse.php" ) )
+         pin.print text
+         pin.close
+         #STDERR.puts perr.read
+         html = pout.read
       end
    end
 end
