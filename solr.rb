@@ -24,6 +24,8 @@ class WikipediaSolr
          :fl => "* score",
          :hl => true,
          :"hl.fl" => "highlight_text",
+	 :defType => "edismax",
+	 :qf => "title^10.0 redirects^2.0 text^1.0",
       }
       params.update( opts )
       response = @solr.get( "select", :params => params )
