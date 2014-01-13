@@ -19,6 +19,10 @@ div.form {
   padding-bottom: 10px;
   border-bottom: 1px solid #aaa;
 }
+div.form input {
+  padding: 2px;
+  font-size: larger;
+}
 
 div#footer {
   text-align: right;
