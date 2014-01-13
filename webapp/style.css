@@ -10,7 +10,15 @@ body {
 h1.logo {
   text-align: center;
 }
-div.form { text-align: center; }
+span.logo {
+  margin-right: 1em;
+}
+div.form { 
+  margin-top: .6em;
+  text-align: center; 
+  padding-bottom: 10px;
+  border-bottom: 1px solid #aaa;
+}
 
 div#footer {
   text-align: right;
