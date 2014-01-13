@@ -87,7 +87,7 @@ module MediaWikiParser
             end
          end
          html.gsub!( /<a href="\//, "<a href=\"#{ options[ :baseurl ] }" ) if options[ :baseurl ]
-	 html.gsub!( /<span class="editsection">.*?<\/span>/, '' )
+	 html.gsub!( /<span class="editsection">.*?<\/span>/io, '' )
 	 html
       end
    end
@@ -102,6 +102,8 @@ module MediaWikiParser
          pin.close
          #STDERR.puts perr.read
          html = pout.read
+	 html.gsub!( /<span class="mw-editsection"><span class="mw-editsection-bracket">\[<\/span>.*?edit<\/a><span class="mw-editsection-bracket">\]<\/span><\/span>/io, '' )
+	 html
       end
    end
 end
