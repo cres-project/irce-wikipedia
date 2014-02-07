@@ -218,10 +218,10 @@ CREATE TABLE page (
  page_is_new INTEGER  NOT NULL default 0,
  page_random real  NOT NULL,
  page_touched BLOB NOT NULL default '',
- page_links_updated BLOB NULL default NULL,
+ --page_links_updated BLOB NULL default NULL,
  page_latest INTEGER  NOT NULL,
- page_len INTEGER  NOT NULL,
- page_content_model BLOB DEFAULT NULL
+ page_len INTEGER  NOT NULL
+ --page_content_model BLOB DEFAULT NULL
  );
 CREATE TABLE page_props (
  pp_page INTEGER NOT NULL,
