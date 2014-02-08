@@ -14,8 +14,12 @@ dbh.transaction do
       if line =~ /\AINSERT INTO \`(\w+)\` VALUES\s*\((.*)\);\Z/
          #puts $.
          table = $1.dup
-         rows = $2.dup.split( /\),\(/ )
+         pattern = /\),\((?=\d+)/
+         pattern = /\),\((?=\d\d+)/ if table == "text"
+         rows = $2.dup.split( pattern )
          rows.each do |r|
+            if table == "text"
+            end
             #p r
             ## "'girl\'s'" should be "'girl''s'"
             ## "'\'" should become "'\\'" (as-is).
@@ -27,7 +31,8 @@ dbh.transaction do
                end
             end
             sql = %Q[INSERT INTO #{ table } VALUES (#{ r })]
-            #p sql
+            #open( "z", "w" ){|io| io.puts sql }
+            #puts sql
             dbh.execute( sql )
             count += 1
             if ( count % 10000 ) == 0
