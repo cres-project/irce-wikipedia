@@ -97,10 +97,11 @@ module MediaWikiParser
       def to_html( base_url )
          ENV.delete "REQUEST_METHOD"
          text = open( cache.filename ){|io| io.read }
-         pin, pout, perr = *Open3.popen3( "php " << File.join( BASEDIR, "parse.php" ) )
+         cmd = [ "php", File.join( BASEDIR, "parse.php" ), "--title", @title ]
+         pin, pout, perr = *Open3.popen3( *cmd )
          pin.print text
          pin.close
-         #STDERR.puts perr.read
+         # STDERR.puts perr.read
          html = pout.read
 	 html.gsub!( /<span class="mw-editsection"><span class="mw-editsection-bracket">\[<\/span>.*?edit<\/a><span class="mw-editsection-bracket">\]<\/span><\/span>/io, '' )
 	 html
