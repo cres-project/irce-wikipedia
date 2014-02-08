@@ -29,12 +29,12 @@ dbh.transaction do
             sql = %Q[INSERT INTO #{ table } VALUES (#{ r })]
             #p sql
             dbh.execute( sql )
-            if ( count % 10000 ) == 0
-               elapsed = Time.now - start_time
-               puts [ count, elapsed ].join( "\t" )
-            end
             count += 1
+            if ( count % 10000 ) == 0
+               puts "#{ count } records, #{ Time.now - start_time } elapsed."
+            end
          end
       end
    end
 end
+puts "#{ count } records, #{ Time.now - start_time } elapsed."
