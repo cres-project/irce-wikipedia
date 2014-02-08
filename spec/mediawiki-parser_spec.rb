@@ -3,8 +3,12 @@
 
 require "mediawiki-parser.rb"
 
+RSpec.configure do |c|
+   c.filter_run_excluding :skip => true
+end
+
 describe "mediawiki-parser.rb" do
-   context "Kiwi" do
+   context "Kiwi", :skip => true do
       context "#to_html" do
          it "should parse properly the page '言語'." do
             parser = MediaWikiParser::Kiwi.new( '言語' )
@@ -54,6 +58,11 @@ describe "mediawiki-parser.rb" do
          html.should match /<b>言語<\/b>/
          #p html
          html.should include "Portal:言語学"
+      end
+      it "should not include a red link." do
+         parser = MediaWikiParser::Cmdline.new( '言語' )
+         html = parser.to_html( :base_url => "?title=" )
+         html.should_not match /<a [^>]*\bclass=\"new\"/
       end
    end
 end
