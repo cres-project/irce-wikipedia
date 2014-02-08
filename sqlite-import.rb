@@ -15,7 +15,7 @@ dbh.transaction do
          #puts $.
          table = $1.dup
          pattern = /\),\((?=\d+)/
-         pattern = /\),\((?=\d\d+)/ if table == "text"
+         pattern = /\),\((?=\d{4,})/ if table == "text"
          rows = $2.dup.split( pattern )
          rows.each do |r|
             if table == "text"
