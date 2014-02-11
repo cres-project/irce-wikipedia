@@ -101,7 +101,7 @@ module MediaWikiParser
          pin, pout, perr = *Open3.popen3( *cmd )
          pin.print text
          pin.close
-         # STDERR.puts perr.read
+         STDERR.puts perr.read
          html = pout.read
 	 html.gsub!( /<span class="mw-editsection"><span class="mw-editsection-bracket">\[<\/span>.*?edit<\/a><span class="mw-editsection-bracket">\]<\/span><\/span>/io, '' )
 	 html
@@ -111,6 +111,7 @@ end
 
 if $0 == __FILE__
    title = ARGV[0] || "言語"
-   parser = MediaWikiParser::Kiwi.new( title )
+   #parser = MediaWikiParser::Kiwi.new( title )
+   parser = MediaWikiParser::Cmdline.new( title )
    puts parser.to_html( :ignore_bold => true, :no_expand_template => true )
 end
