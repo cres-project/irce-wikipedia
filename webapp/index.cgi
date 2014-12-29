@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
-$:.push File.dirname( __FILE__ )
-require "index.rb"
+require_relative "index.rb"
 
 begin
    time = Time.now

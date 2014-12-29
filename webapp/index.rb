@@ -6,8 +6,7 @@ require "cgi"
 require "erb"
 require "pp"
 
-$:.push File.join( File.dirname( __FILE__ ), ".." )
-require "solr.rb"
+require_relative "../solr.rb"
 
 module WebApp
    class Base
