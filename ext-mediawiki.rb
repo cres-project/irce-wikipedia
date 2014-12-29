@@ -18,8 +18,20 @@ if $0 == __FILE__
 			and mwpage.page_id < 10000
 EOF
   results.each do |row|
-    indexer.add( id: row["page_id"], text: row["old_text"], title: row["page_title"] )
+    title_s = mysql.escape( row["page_title"] )
+    rd_sql = <<EOF
+	select * from mwpage, mwredirect
+		where mwredirect.rd_title = '#{ title_s }'
+			and mwredirect.rd_namespace = 0
+			and mwpage.page_id = mwredirect.rd_from
+EOF
+    redirects = []
+    mysql.query( rd_sql ).each do |r|
+      redirects << [ r["page_title"], r["rd_fragments"] ].join(" ")
+    end
+    indexer.add( id: row["page_id"], text: row["old_text"], title: row["page_title"], redirects: redirects )
     STDERR.puts [ row["page_id"], row["page_title"] ].join( "\t" )
+    STDERR.puts redirects.inspect if not redirects.empty?
   end
   indexer.commit
 end
