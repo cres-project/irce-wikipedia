@@ -2,7 +2,7 @@
 
 count = 0
 header = ""
-BOUNDARY = 100
+BOUNDARY = 1000
 
 io = open( "%04d.txt" % count, "w" )
 
