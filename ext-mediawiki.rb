@@ -15,7 +15,8 @@ if $0 == __FILE__
 			and mwrevision.rev_page = mwpage.page_id
 			and mwpage.page_namespace = 0
 			and mwpage.page_is_redirect != 1
-			and mwpage.page_id < 10000
+			and mwpage.page_id >= 40000
+			and mwpage.page_id < 50000
 EOF
   results.each do |row|
     title_s = mysql.escape( row["page_title"] )
@@ -30,8 +31,7 @@ EOF
       redirects << [ r["page_title"], r["rd_fragments"] ].join(" ")
     end
     indexer.add( id: row["page_id"], text: row["old_text"], title: row["page_title"], redirects: redirects )
-    STDERR.puts [ row["page_id"], row["page_title"] ].join( "\t" )
-    STDERR.puts redirects.inspect if not redirects.empty?
+    STDERR.puts [ row["page_id"], row["page_title"], redirects.inspect ].join( "\t" )
   end
   indexer.commit
 end
