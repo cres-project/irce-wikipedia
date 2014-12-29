@@ -31,12 +31,12 @@ module WebApp
       end
       def search
          solr = WikipediaSolr.new
-         result = solr.search_fulltext( @query, { :start => @page * @per_page } )
+         @result = solr.search_fulltext( @query, { :start => @page * @per_page } )
       end
       def search_random
          seed = Time.now.to_i
          solr = WikipediaSolr.new
-         result = solr.search_fulltext( "*:*", { :sort => "random_#{ seed } desc" } )
+         @result = solr.search_fulltext( "*:*", { :sort => "random_#{ seed } desc" } )
       end
       def per_page=( n )
          @per_page = n
@@ -45,7 +45,13 @@ module WebApp
          result = %Q[<div class="paginate">ページ:\n]
          spage = page - 6
          spage = 0 if spage < 0
-         epage = spage + 15
+         #STDERR.puts "numFound: #{@result[ "response" ][ "numFound" ]}"
+         epage = @result[ "response" ][ "numFound" ].to_i / @per_page
+         if epage == 0
+            epage = 1
+         elsif epage > ( spage + 15 )
+            epage = spage + 15 
+         end
          ( spage ... epage ).each do |i|
             if i == @page
                result << %Q[<span class="page"><strong>#{ i+1 }</strong></span>]

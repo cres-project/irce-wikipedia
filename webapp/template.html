@@ -46,6 +46,10 @@
   <% if snippet and snippet["text"] and not snippet["text"].empty? %>
     <dd class="snippet">
     <% snippet[ "text" ].each do |snippet| %>
+      <%
+      snippet = h snippet 
+      snippet.gsub!( /&lt;(\/?em)&gt;/, '<\1>' )
+      %>
       <span class="snippet"><%= snippet %>...</span>
     <% end %> 
     </dd>
