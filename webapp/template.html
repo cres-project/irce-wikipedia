@@ -40,10 +40,18 @@
 検索にかかった時間<%= sprintf( '%.02f', data[ :elapsed ] ) %>秒</p>
 <dl class="search_results">
 <% results[ "docs" ].each do |e| %>
-<%   snippet = highlighting[ e["title"] ] or e %>
+<%   snippet = highlighting[ e["title"] ] %>
 <%   count += 1 %>
   <dt><%= count %>. <a href="<%=h @conf[ "mediawiki_path" ] %><%=u e[ "title" ] %>"><%=h e[ "title" ] %></a></dt>
-  <dd class="snippet"><%= snippet[ "highlight_text" ] %>...</dd>
+  <% if snippet and snippet["text"] and not snippet["text"].empty? %>
+    <dd class="snippet">
+    <% snippet[ "text" ].each do |snippet| %>
+      <span class="snippet"><%= snippet %>...</span>
+    <% end %> 
+    </dd>
+  <% else %>
+  <dd class="snippet"><%=h e["text"][0,300] %></dd>
+  <% end %>
   <dd class="url">記事: <a href="<%=h @conf[ "mediawiki_path" ] %><%=u e[ "title" ] %>"><%= e[ "title" ] %></a></dd>
 <% end %>
 </dl>
@@ -57,7 +65,7 @@
 <ul>
 <% results = data[ :results ][ "response" ] %>
 <% results[ "docs" ].each do |e| %>
-  <li><a href="browse.cgi?title=<%=h e[ "title" ] %>"><%=h e[ "title" ] %></a>
+  <li><a href="<%=h @conf["mediawiki_path"] %><%=u e[ "title" ] %>"><%=h e[ "title" ] %></a>
 <% end %>
 </ul>
 <% end %>

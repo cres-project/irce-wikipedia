@@ -23,7 +23,9 @@ class WikipediaSolr
          # :rows => 1000,
          :fl => "* score",
          :hl => true,
-         :"hl.fl" => "highlight_text",
+         :"hl.q" => query,
+         :"hl.fl" => "text",
+         :"hl.snippets" => 3,
 	 :defType => "edismax",
 	 :qf => "title^10.0 redirects^2.0 text^1.0",
       }
