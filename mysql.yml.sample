@@ -1,0 +1,5 @@
+host: localhost
+database: mediawiki
+username: ircepedia
+password: ircepedia-password
+

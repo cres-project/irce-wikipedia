@@ -94,7 +94,7 @@ module MediaWikiParser
       end
    end
 
-   class Cmdline < Kiwi
+   class Cmdline < Base
       BASEDIR = File.join( File.dirname(__FILE__), "..", "mediawiki", "maintenance" )
       def to_html( base_url )
          ENV.delete "REQUEST_METHOD"
