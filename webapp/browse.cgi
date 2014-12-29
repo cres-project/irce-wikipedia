@@ -4,11 +4,8 @@ require "cgi"
 require "erb"
 require "pp"
 
-$:.push File.dirname(__FILE__)
-require "index.rb"
-
-$:.push File.join( File.dirname(__FILE__), ".." )
-require "mediawiki-parser.rb"
+require_relative "ircepedia.rb"
+require_relative "../mediawiki-parser.rb"
 
 module WebApp
    class WikipediaBrowse < Base

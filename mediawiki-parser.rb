@@ -4,11 +4,13 @@
 require "pp"
 require "open3"
 
-$:.push File.join( File.dirname(__FILE__), ".." )
-require "ext-xmldump.rb"
+require_relative "ext-xmldump.rb"
 
-$:.push File.join( File.dirname(__FILE__), "..", "kiwi", "ffi" )
-require "yapwtp.rb"
+begin
+   #$:.push File.join( File.dirname(__FILE__), "..", "kiwi", "ffi" )
+   require "yapwtp.rb"
+rescue LoadError
+end
 
 module MediaWikiParser
    class Base

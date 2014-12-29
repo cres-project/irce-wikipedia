@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative "index.rb"
+require_relative "ircepedia.rb"
 
 begin
    time = Time.now

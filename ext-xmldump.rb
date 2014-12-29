@@ -7,7 +7,7 @@ require "pp"
 require "rubygems"
 require "libxml"
 
-require "solr.rb"
+require_relative "solr.rb"
 
 class MyWikipediaDumps
    REDIRECT_REGEXP = /\A#(REDIRECT|転送)\s*\[\[(.+)\]\]/i
