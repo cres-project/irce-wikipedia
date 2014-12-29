@@ -5,7 +5,8 @@ require_relative "ircepedia.rb"
 begin
    time = Time.now
    cgi = CGI.new
-   app = WebApp::WikipediaSearch.new( cgi )
+   conf = YAML.load( open "ircepedia.yml" )
+   app = WebApp::WikipediaSearch.new( cgi, conf )
    data = {}
    if app.query
       data[ :results ] = app.search

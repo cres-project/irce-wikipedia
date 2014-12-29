@@ -8,7 +8,7 @@
 <%=h @title %>
 -
 <% end %>
-<%=h TITLE %>
+<%=h @conf[ "title" ] %>
 <% if @query %>
 : <%=h @query %>
 <% end %>
@@ -42,9 +42,9 @@
 <% results[ "docs" ].each do |e| %>
 <%   snippet = highlighting[ e["title"] ] or e %>
 <%   count += 1 %>
-  <dt><%= count %>. <a href="./browse.cgi?title=<%=u e[ "title" ] %>"><%=h e[ "title" ] %></a></dt>
+  <dt><%= count %>. <a href="<%=h @conf[ "mediawiki_path" ] %><%=u e[ "title" ] %>"><%=h e[ "title" ] %></a></dt>
   <dd class="snippet"><%= snippet[ "highlight_text" ] %>...</dd>
-  <dd class="url">記事: <a href="./browse.cgi?title=<%= e[ "title" ] %>"><%= e[ "title" ] %></a></dd>
+  <dd class="url">記事: <a href="<%=h @conf[ "mediawiki_path" ] %><%=u e[ "title" ] %>"><%= e[ "title" ] %></a></dd>
 <% end %>
 </dl>
 <%= paginate %>

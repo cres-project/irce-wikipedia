@@ -5,12 +5,12 @@
 require "cgi"
 require "erb"
 require "pp"
+require "yaml"
 
 require_relative "../solr.rb"
 
 module WebApp
    class Base
-      TITLE = "百科事典サーチ ircepedia"
       def to_html( data, template = "template.html" )
          eval_rhtml( template, binding )
       end
@@ -22,11 +22,12 @@ module WebApp
    end
    class WikipediaSearch < Base
       attr_reader :query, :page
-      def initialize( cgi )
+      def initialize( cgi, conf = {} )
          @cgi = cgi
          @page = @cgi.params["page"][0].to_i
          @query = @cgi.params["q"][0]
          @per_page = 10
+	 @conf = conf
       end
       def search
          solr = WikipediaSolr.new
