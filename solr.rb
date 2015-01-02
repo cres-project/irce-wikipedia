@@ -5,7 +5,7 @@ require "rubygems"
 require "rsolr"
 
 class WikipediaSolr
-   def initialize( url = "http://localhost:18983/solr/" )
+   def initialize( url = "http://localhost:8983/solr/" )
       @solr = RSolr.connect( :url => url )
    end
    def add( context )
