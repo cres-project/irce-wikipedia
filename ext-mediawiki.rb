@@ -8,30 +8,37 @@ if $0 == __FILE__
   indexer = WikipediaSolr.new
   conf = YAML.load( open "mysql.yml" )
   mysql = Mysql2::Client.new( conf )
-  results = mysql.query( <<EOF )
-	select mwpage.page_id, mwpage.page_title, mwtext.old_text 
-		from mwpage,mwrevision,mwtext
-		 where mwtext.old_id = mwrevision.rev_text_id
-			and mwrevision.rev_page = mwpage.page_id
-			and mwpage.page_namespace = 0
-			and mwpage.page_is_redirect != 1
-			and mwpage.page_id >= 40000
-			and mwpage.page_id < 50000
+  results = []
+  idx = 0
+  interval = 10000
+  while idx == 0 or results.size > 0
+    STDERR.puts "subset: #{ idx } .. #{ idx + interval }"
+    sql = <<EOF
+	select page.page_id, page.page_title, text.old_text
+		from page,revision,text
+		 where text.old_id = revision.rev_text_id
+			and revision.rev_page = page.page_id
+			and page.page_namespace = 0
+			and page.page_is_redirect != 1
+			and page.page_id between #{ idx } and #{ idx + interval }
 EOF
-  results.each do |row|
-    title_s = mysql.escape( row["page_title"] )
-    rd_sql = <<EOF
-	select * from mwpage, mwredirect
-		where mwredirect.rd_title = '#{ title_s }'
-			and mwredirect.rd_namespace = 0
-			and mwpage.page_id = mwredirect.rd_from
+    results = mysql.query( sql, cast: false )
+    results.each do |row|
+      title_s = mysql.escape( row["page_title"] )
+      rd_sql = <<EOF
+	select * from page, redirect
+		where redirect.rd_title = '#{ title_s }'
+			and redirect.rd_namespace = 0
+			and page.page_id = redirect.rd_from
 EOF
-    redirects = []
-    mysql.query( rd_sql ).each do |r|
-      redirects << [ r["page_title"], r["rd_fragments"] ].join(" ")
+      redirects = []
+      mysql.query( rd_sql ).each do |r|
+        redirects << [ r["page_title"], r["rd_fragments"] ].join(" ").strip
+      end
+      indexer.add( id: row["page_id"], text: row["old_text"], title: row["page_title"], redirects: redirects )
+      STDERR.puts [ row["page_id"], row["page_title"], redirects.join(", ") ].join( "\t" )
     end
-    indexer.add( id: row["page_id"], text: row["old_text"], title: row["page_title"], redirects: redirects )
-    STDERR.puts [ row["page_id"], row["page_title"], redirects.inspect ].join( "\t" )
+    indexer.commit
+    idx += interval
   end
-  indexer.commit
 end
