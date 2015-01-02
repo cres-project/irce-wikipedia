@@ -42,7 +42,7 @@
 <% results[ "docs" ].each do |e| %>
 <%   snippet = highlighting[ e["title"] ] %>
 <%   count += 1 %>
-  <dt><%= count %>. <a href="<%=h @conf[ "mediawiki_path" ] %><%=u e[ "title" ] %>"><%=h e[ "title" ] %></a></dt>
+  <dt><%= count %>. <a href="<%=h @conf[ "mediawiki_path" ] %><%=h e[ "title" ] %>"><%=h e[ "title" ] %></a></dt>
   <% if snippet and snippet["text"] and not snippet["text"].empty? %>
     <dd class="snippet">
     <% snippet[ "text" ].each do |snippet| %>
