@@ -4,6 +4,9 @@
 require "pp"
 require "open3"
 require "htmlentities"
+if not String.instance_methods.include? :scrub
+   require "string/scrub"
+end
 
 require_relative "ext-xmldump.rb"
 
@@ -77,6 +80,7 @@ module MediaWikiParser
 	 end
 	 html = parser.html_from_string( text )
          html.force_encoding( "utf-8" )
+         html.scrub!
          templates = @parser.templates
          templates.each do |template|
             #STDERR.puts template.inspect
