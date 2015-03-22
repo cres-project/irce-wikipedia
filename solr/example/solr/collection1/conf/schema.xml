@@ -140,6 +140,7 @@
    -->
    <field name="id" type="string" indexed="true" stored="true"/>
    <field name="title" type="string" indexed="true" stored="true"/>
+   <field name="title_s" type="string" indexed="true" stored="true"/>
    <field name="ns" type="string" indexed="true" stored="true"/>
    <field name="redirects" type="string" indexed="true" stored="true" multiValued="true"/>
 
@@ -277,6 +278,7 @@
 
    <!-- Text fields from SolrCell to search by default in our catch-all field -->
    <copyField source="title" dest="text"/>
+   <copyField source="title_s" dest="text"/>
    <copyField source="redirects" dest="text"/>
 <!--
    <copyField source="author" dest="text"/>
