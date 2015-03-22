@@ -8,7 +8,7 @@ require "htmlentities"
 require_relative "ext-xmldump.rb"
 
 begin
-   #$:.push File.join( File.dirname(__FILE__), "..", "kiwi", "ffi" )
+   $:.push File.join( File.dirname(__FILE__), "..", "kiwi", "ffi" )
    require "yapwtp.rb"
 rescue LoadError
 end
@@ -31,7 +31,7 @@ module MediaWikiParser
       def to_text( options = {} )
          entities = HTMLEntities.new
          html = self.to_html( options )
-	 html.gsub!( /<\w+.[^>]*>/, " " )
+	 html.gsub!( /<\/?\w+.[^>]*>/, " " )
          entities.decode( html )
       end
    end
@@ -42,6 +42,7 @@ module MediaWikiParser
          @parser = WikiParser.new
          @cache = MyWikipediaDumps::CachePage.new( title )
          @text = text
+         #STDERR.puts @text.encoding
          #STDERR.puts "#{ self.class } initialized."
       end
       def to_html( options = {} )
@@ -71,9 +72,13 @@ module MediaWikiParser
             text.gsub!( /''/o, "" )
 	 end
 	 html = parser.html_from_string( text )
+         html.force_encoding( "utf-8" )
          templates = @parser.templates
          templates.each do |template|
             #STDERR.puts template.inspect
+            template.each do |k,v|
+              template[k] = v.force_encoding( "utf-8" ) if v.respond_to? :encode
+            end
             if options[ :no_expand_template ]
                html.gsub!( template[ :replace_tag ], "" )
 	    else
@@ -136,7 +141,8 @@ end
 
 if $0 == __FILE__
    title = ARGV[0] || "言語"
-   #parser = MediaWikiParser::Kiwi.new( title )
-   parser = MediaWikiParser::Cmdline.new( title )
-   puts parser.to_html( :ignore_bold => true, :no_expand_template => true )
+   parser = MediaWikiParser::Kiwi.new( title, open("z").read )
+   #parser = MediaWikiParser::Cmdline.new( title )
+   #puts parser.to_html( :ignore_bold => true, :no_expand_template => true )
+puts parser.to_text
 end
