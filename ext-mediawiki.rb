@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
 
 require "yaml"
 require "mysql2"
@@ -22,7 +23,6 @@ if $0 == __FILE__
 			and page.page_namespace = 0
 			and page.page_is_redirect != 1
 			and page.page_id between #{ idx } and #{ idx + interval }
-		limit 10
 EOF
     results = mysql.query( sql, cast: false )
     results.each do |row|
@@ -38,8 +38,9 @@ EOF
         page_title = r["page_title"].gsub( /_+/, " " )
         redirects << [ page_title, r["rd_fragments"] ].join(" ").strip
       end
-      parser = MediaWikiParser::Cmdline.new( row["page_title"], row["old_text"] )
-      text = parser.to_text
+      #parser = MediaWikiParser::Cmdline.new( row["page_title"], row["old_text"] )
+      parser = MediaWikiParser::Kiwi.new( row["page_title"], row["old_text"] )
+      text = parser.to_text( :no_expand_template => true, :ignore_bold => true )
       page_title = row["page_title"].gsub( /_+/, " " )
       indexer.add( id: row["page_id"],
                    text: row["old_text"],
@@ -52,6 +53,5 @@ EOF
     end
     indexer.commit
     idx += interval
-    break
   end
 end
