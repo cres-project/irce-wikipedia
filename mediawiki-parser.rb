@@ -3,6 +3,7 @@
 
 require "pp"
 require "open3"
+require "htmlentities"
 
 require_relative "ext-xmldump.rb"
 
@@ -25,22 +26,32 @@ module MediaWikiParser
 	 "15" => "Category talk",
       }
       attr_reader :parser, :cache, :title
-      def initialize( title ); end
-      def to_html; end
+      def initialize( title, text = nil ); end
+      def to_html( options = {} ); end
+      def to_text( options = {} )
+         entities = HTMLEntities.new
+         html = self.to_html( options )
+	 html.gsub!( /<\w+.[^>]*>/, " " )
+         entities.decode( html )
+      end
    end
 
    class Kiwi < Base
-      def initialize( title )
+      def initialize( title, text = nil )
          @title = title
          @parser = WikiParser.new
          @cache = MyWikipediaDumps::CachePage.new( title )
+         @text = text
          #STDERR.puts "#{ self.class } initialized."
       end
       def to_html( options = {} )
          # linkto_baseurl = "", no_expand_template = false, include = false,
 	 html = nil
          #p @title
-         text = open( cache.filename ){|io| io.read }
+         text = @text
+         unless text
+            text = open( cache.filename ){|io| io.read }
+         end
 	 if options[ :include ]
 	    if text =~ /<onlyinclude>(.*?)<\/onlyinclude>/mo
 	       text = $1.dup
@@ -96,15 +107,27 @@ module MediaWikiParser
 
    class Cmdline < Base
       BASEDIR = File.join( File.dirname(__FILE__), "..", "mediawiki", "maintenance" )
+      def initialize( title, text = nil )
+         @title = title
+         @text = text
+      end
       def to_html( base_url )
          ENV.delete "REQUEST_METHOD"
-         text = open( cache.filename ){|io| io.read }
+         text = @text
+         unless text
+            text = open( cache.filename ){|io| io.read }
+         end
          cmd = [ "php", File.join( BASEDIR, "parse.php" ), "--title", @title ]
-         pin, pout, perr = *Open3.popen3( *cmd )
-         pin.print text
-         pin.close
-         STDERR.puts perr.read
-         html = pout.read
+         html = Open3.popen3( *cmd ) do |pin, pout, perr, wait_thread|
+           pin.print text
+           pin.close
+#STDERR.puts "to_html : #@title : #{text[0..30].inspect}"
+#STDERR.puts cmd.inspect
+#STDERR.puts [pin, pout, perr, wait_thread].inspect
+           #wait_thread.join
+           #STDERR.puts perr.read
+           html = pout.read
+         end
 	 html.gsub!( /<span class="mw-editsection"><span class="mw-editsection-bracket">\[<\/span>.*?edit<\/a><span class="mw-editsection-bracket">\]<\/span><\/span>/io, '' )
 	 html
       end
