@@ -156,7 +156,7 @@
    <!-- catchall field, containing all other searchable text fields (implemented
         via copyField further on in this schema  -->
    <field name="text" type="text_cjk" indexed="true" stored="true" multiValued="true"/>
-   <field name="highlight_text" type="text_cjk" indexed="false" stored="true" />
+   <field name="highlight_text" type="text_cjk" indexed="true" stored="true" />
 
    <!-- catchall text field that indexes tokens both normally and in reverse for efficient
         leading wildcard queries. -->
@@ -280,6 +280,7 @@
    <copyField source="title" dest="text"/>
    <copyField source="title_s" dest="text"/>
    <copyField source="redirects" dest="text"/>
+   <copyField source="highlight_text" dest="text"/>
 <!--
    <copyField source="author" dest="text"/>
    <copyField source="description" dest="text"/>
