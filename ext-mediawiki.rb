@@ -40,7 +40,8 @@ EOF
       end
       #parser = MediaWikiParser::Cmdline.new( row["page_title"], row["old_text"] )
       parser = MediaWikiParser::Kiwi.new( row["page_title"], row["old_text"] )
-      text = parser.to_text( :no_expand_template => true, :ignore_bold => true )
+      text = parser.to_text( :no_expand_template => true, :ignore_bold => true, :notoc => true )
+#puts text
       page_title = row["page_title"].gsub( /_+/, " " )
       indexer.add( id: row["page_id"],
                    text: row["old_text"],
