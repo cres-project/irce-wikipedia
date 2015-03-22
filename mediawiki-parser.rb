@@ -31,8 +31,12 @@ module MediaWikiParser
       def to_text( options = {} )
          entities = HTMLEntities.new
          html = self.to_html( options )
-	 html.gsub!( /<\/?\w+.[^>]*>/, " " )
-         entities.decode( html )
+	 html.gsub!( /<!--.*?-->/mo, "" )
+	 html.gsub!( /<\/?\w+[^>]*>/, " " )
+         text = entities.decode( html )
+	 text.gsub!( /<\/?ref>/, "" )
+	 text.gsub!( /<references\s*\/?>/, "" )
+	 text
       end
    end
 
@@ -106,6 +110,10 @@ module MediaWikiParser
          end
          html.gsub!( /<a href="\//, "<a href=\"#{ options[ :baseurl ] }" ) if options[ :baseurl ]
 	 html.gsub!( /<span class="editsection">.*?<\/span>/io, '' )
+         if options[ :notoc ]
+	    html.gsub!( /<div id="toctitle">.*?<\/div>/o, " " )
+	    html.gsub!( /<div id="toc".*?<\/div>/mo, " " )
+	 end
 	 html
       end
    end
@@ -141,8 +149,9 @@ end
 
 if $0 == __FILE__
    title = ARGV[0] || "言語"
-   parser = MediaWikiParser::Kiwi.new( title, open("z").read )
+   parser = MediaWikiParser::Kiwi.new( title, open("z2").read )
    #parser = MediaWikiParser::Cmdline.new( title )
    #puts parser.to_html( :ignore_bold => true, :no_expand_template => true )
-puts parser.to_text
+puts parser.to_html( :notoc => true )
+#puts parser.to_text( :notoc => true )
 end
