@@ -10,10 +10,10 @@ if $0 == __FILE__
   indexer = WikipediaSolr.new
   conf = YAML.load( open "mysql.yml" )
   mysql = Mysql2::Client.new( conf )
-  results = []
-  idx = 0 
+  results = [nil]
+  idx = 0
   interval = 10000
-  while idx == 0 or results.size > 0
+  while results.size > 0
     STDERR.puts "subset: #{ idx } .. #{ idx + interval }"
     sql = <<EOF
 	select page.page_id, page.page_title, text.old_text
