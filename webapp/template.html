@@ -43,9 +43,9 @@
 <%   snippet = highlighting[ e["title"] ] %>
 <%   count += 1 %>
   <dt><%= count %>. <a href="<%=h @conf[ "mediawiki_path" ] %><%=h e[ "title" ] %>"><%=h e[ "title" ] %></a></dt>
-  <% if snippet and snippet["text"] and not snippet["text"].empty? %>
+  <% if snippet and snippet["highlight_text"] and not snippet["highlight_text"].empty? %>
     <dd class="snippet">
-    <% snippet[ "text" ].each do |snippet| %>
+    <% snippet[ "highlight_text" ].each do |snippet| %>
       <%
       snippet = h snippet 
       snippet.gsub!( /&lt;(\/?em)&gt;/, '<\1>' )
@@ -54,7 +54,11 @@
     <% end %> 
     </dd>
   <% else %>
-  <dd class="snippet"><%=h e["text"][0,300] %></dd>
+<% if e["highlight_text"] %>
+  <dd class="snippet highlight_text"><%=h e["highlight_text"][0,300] %></dd>
+<% else %>
+  <dd class="snippet text"><%=h e["text"].first[0,300] %></dd>
+<% end %>
   <% end %>
   <dd class="url">記事: <a href="<%=h @conf[ "mediawiki_path" ] %><%=u e[ "title" ] %>"><%= e[ "title" ] %></a></dd>
 <% end %>
