@@ -87,6 +87,8 @@ def make_imageinfo( title, params = {} )
       end
     when "size"
       result[ :size ] = image_row[ "img_size" ]
+      result[ :width ] = image_row[ "img_width" ]
+      result[ :height ] = image_row[ "img_height" ]
     when "sha1"
       result[ :sha1 ] = image_row[ "img_sha1" ]
     when "mime"
