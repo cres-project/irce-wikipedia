@@ -74,7 +74,7 @@ def make_imageinfo( title, params = {} )
     when "userid"
       result[ :user ] = image_row[ "img_user" ]
     when "url", "thumbnail"
-      result[ :url ] = "#{ BASEURL[:upload] }/#{ hash[0,1] }/#{ hash[0,2] }/#{ fname }"
+      result[ :url ] = "#{ BASEURL[:upload] }#{ hash[0,1] }/#{ hash[0,2] }/#{ fname }"
       result[ :descriptionurl ] = "#{ BASEURL[:commons] }#{ title }"
       width = params[ "iiurlwidth" ].to_i
       if width > 0
