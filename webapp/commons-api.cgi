@@ -34,9 +34,13 @@ require "mysql2"
            "https://commons.wikimedia.org/wiki/File:Question_book-4.svg"}]}}}}
 =end
 
-BASEURL = {
+COMMONS_BASEURL = {
   :upload => "https://upload.wikimedia.org/wikipedia/commons/",
-  :commons=> "https://commons.wikimedia.org/wiki/",
+  :wiki   => "https://commons.wikimedia.org/wiki/",
+}
+JAWIKI_BASEURL = {
+  :upload => "https://upload.wikimedia.org/wikipedia/ja/",
+  :wiki   => "https://ja.wikipedia.org/wiki/",
 }
 def image_suffix?( title )
   title.match( /\.(gif|jpe?g|png)\Z/i )
@@ -44,10 +48,10 @@ end
 def raw_filename( title )
   filename = title.sub( /\A(File|Image|Media|ファイル|画像|メディア)\:/, "" )
 end
-def query_image_db( title )
+def query_image_db( title, database = "mediawiki" )
   mysql_conf_fname = File.join( File.dirname( __FILE__ ), "..", "mysql.yml" )
   conf = YAML.load( open mysql_conf_fname )
-  conf[ "database" ] = "commonswiki"
+  conf[ "database" ] = database
   mysql = Mysql2::Client.new( conf )
   title_s = mysql.escape( title )
   row = mysql.query( "select * from image where img_name = '#{ title_s }'" )
@@ -55,15 +59,18 @@ def query_image_db( title )
 end
 def make_imageinfo( title, params = {} )
   fname = raw_filename( title )
-  image_row = query_image_db( fname )
+  baseurl = JAWIKI_BASEURL
+  image_row = query_image_db( fname, "jawiki" )
   #p [ title, image_row ]
   unless image_row
-    return {}
+    baseurl = COMMONS_BASEURL
+    image_row = query_image_db( fname, "commonswiki" )
+    return {} unless image_row
   end
   hash = Digest::MD5.hexdigest( fname )
   result = {}
   iiprop = params[ "iiprop" ]
-  iiprop ||= 'timestamp|user'
+  iiprop = 'timestamp|user' if iiprop.nil? or iiprop.empty?
   iiprop.split( /\|/ ).each do |prop|
     case prop
     when "timestamp"
@@ -74,11 +81,11 @@ def make_imageinfo( title, params = {} )
     when "userid"
       result[ :user ] = image_row[ "img_user" ]
     when "url", "thumbnail"
-      result[ :url ] = "#{ BASEURL[:upload] }#{ hash[0,1] }/#{ hash[0,2] }/#{ fname }"
-      result[ :descriptionurl ] = "#{ BASEURL[:commons] }#{ title }"
+      result[ :url ] = "#{ baseurl[:upload] }#{ hash[0,1] }/#{ hash[0,2] }/#{ fname }"
+      result[ :descriptionurl ] = "#{ baseurl[:wiki] }#{ title }"
       width = params[ "iiurlwidth" ].to_i
       if width > 0
-        result[ :thumburl ] = "#{ BASEURL[:upload] }thumb/#{ hash[0,1] }/#{ hash[0,2] }/#{ fname }/#{ width }px-#{ fname }"
+        result[ :thumburl ] = "#{ baseurl[:upload] }thumb/#{ hash[0,1] }/#{ hash[0,2] }/#{ fname }/#{ width }px-#{ fname }"
         result[ :thumburl ] << ".png" if not image_suffix? title
         result[ :thumbwidth ] = width
 	original_width = image_row[ "img_width" ].to_f
