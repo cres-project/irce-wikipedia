@@ -1,5 +1,15 @@
-@import "https://bits.wikimedia.org/ja.wikipedia.org/load.php?debug=false&lang=ja&modules=ext.gadget.Navigation_popups%2CReferenceTooltips%2CWikiMiniAtlas%2CmySandbox%7Cext.rtlcite%2Cwikihiero%7Cext.uls.nojs%7Cext.visualEditor.viewPageTarget.noscript%7Cmediawiki.legacy.commonPrint%2Cshared%7Cmw.PopUpMediaTransform%7Cskins.vector&only=styles&skin=vector&*";
+@import "https://bits.wikimedia.org/ja.wikipedia.org/load.php?debug=false&lang=ja&modules=ext.echo.badge%7Cext.gadget.CommentsInLocalTime%2CNavigation_popups%2CReferenceTooltips%2CVectorClassicFonts%2CWikiMiniAtlas%2Cedittop%7Cext.uls.nojs%7Cext.visualEditor.viewPageTarget.noscript%7Cext.wikihiero%2CwikimediaBadges%7Cmediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.sectionAnchor%7Cmediawiki.skinning.interface%7Cmediawiki.special.changeslist%7Cmediawiki.special.changeslist.enhanced%2Clegend%7Cmediawiki.ui.button%7Cskins.vector.styles&only=styles&skin=vector&*";
 @import "https://bits.wikimedia.org/ja.wikipedia.org/load.php?debug=false&lang=ja&modules=site&only=styles&skin=vector&*";
+
+#mw-page-base {
+  height: 0;
+}
+.mw-body {
+  margin-left: 0;
+  padding: 2px;
+  border: none;
+}
+
 
 body { 
   width: 90%; 
