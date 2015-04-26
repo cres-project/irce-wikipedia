@@ -1134,5 +1134,6 @@
        <str name="paramkey">param value</str>
      </similarity>
     -->
+ <similarity class="solr.BM25SimilarityFactory"/>
 
 </schema>
