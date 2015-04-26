@@ -7,6 +7,9 @@ require "json"
 require "yaml"
 require "mysql2"
 
+# Usage:
+# ./commons-api.cgi titles=File:Konosu_Ara_River_Aqueduct_3.JPG "iiprop=timestamp|user|comment|url|size|sha1|metadata|mime|mediatype|extmetadata" prop=imageinfo iimetadataversion=2 iiextmetadatamultilang=1 format=json action=query redirects=true uselang=ja
+
 ## commonswiki imageinfo api (dummy)
 #
 #request parameters:
@@ -77,7 +80,9 @@ def make_imageinfo( title, params = {} )
       t = image_row[ "img_timestamp" ]
       result[ :timestamp ] = "#{ t[0,4] }-#{ t[4,2] }-#{ t[6,2] }T#{ t[8,2] }:#{ t[10,2] }:#{ t[12,2] }Z"
     when "user"
-      result[ :user ] = image_row[ "img_user_text" ]
+      result[ :user ] = image_row[ "img_user_text" ].force_encoding( "utf-8" )
+      #STDERR.puts image_row[ "img_user_text" ].encoding
+      #STDERR.puts image_row[ "img_user_text" ]
     when "userid"
       result[ :user ] = image_row[ "img_user" ]
     when "url", "thumbnail"
@@ -115,6 +120,8 @@ if $0 == __FILE__
   cgi = CGI.new
   title = cgi[ "titles" ]
   imageinfo = make_imageinfo( title, cgi )
+  #STDERR.puts imageinfo.inspect
+  #STDERR.puts cgi.params.inspect
   data = {
     :query => {
       :pages => {
