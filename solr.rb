@@ -27,7 +27,7 @@ class WikipediaSolr
          :"hl.fl" => "highlight_text",
          :"hl.snippets" => 3,
 	 :defType => "edismax",
-	 :qf => "title^10.0 redirects^2.0 text^1.0",
+	 :qf => "title^10.0 category^5.0 redirects^2.0 text^1.0",
       }
       params.update( opts )
       response = @solr.get( "select", :params => params )
