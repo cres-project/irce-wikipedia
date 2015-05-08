@@ -3,3 +3,4 @@
 redirects.txt
 data
 mysql.yml
+*.log
