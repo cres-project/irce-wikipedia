@@ -38,6 +38,14 @@ EOF
         page_title = r["page_title"].gsub( /_+/, " " )
         redirects << [ page_title, r["rd_fragments"] ].join(" ").strip
       end
+      cat_sql = <<-EOF
+	select * from categorylinks where categorylinks.cl_from = #{ row["page_id"] }
+      EOF
+      categories = []
+      mysql.query( cat_sql ).each do |r|
+        cat_title = r["cl_to"].gsub( /_+/, " " )
+        categories << cat_title
+      end
       #parser = MediaWikiParser::Cmdline.new( row["page_title"], row["old_text"] )
       parser = MediaWikiParser::Kiwi.new( row["page_title"], row["old_text"] )
       text = parser.to_text( :no_expand_template => true, :ignore_bold => true, :notoc => true )
@@ -49,8 +57,10 @@ EOF
 		   title: row["page_title"],
                    title_s: page_title,
 		   redirects: redirects,
+		   category: categories,
 		 )
-      STDERR.puts [ row["page_id"], row["page_title"], redirects.join(", ") ].join( "\t" )
+      STDERR.puts [ row["page_id"], row["page_title"], 
+		    redirects.join(", "), categories.join(", ") ].join( "\t" )
     end
     indexer.commit
     idx += interval

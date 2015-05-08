@@ -143,6 +143,7 @@
    <field name="title_s" type="string" indexed="true" stored="true"/>
    <field name="ns" type="string" indexed="true" stored="true"/>
    <field name="redirects" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="category" type="string" indexed="true" stored="true" multiValued="true"/>
 
    <!-- Main body of document extracted by SolrCell.
         NOTE: This field is not indexed by default, since it is also copied to "text"
@@ -280,6 +281,7 @@
    <copyField source="title" dest="text"/>
    <copyField source="title_s" dest="text"/>
    <copyField source="redirects" dest="text"/>
+   <copyField source="category" dest="text"/>
    <copyField source="highlight_text" dest="text"/>
 <!--
    <copyField source="author" dest="text"/>
