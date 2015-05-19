@@ -14,7 +14,7 @@ begin
       #data[ :results ] = results[ "doc" ]
       data[ :elapsed ] = Time.now - time
    else
-      data[ :results ] = app.search_random
+      data[ :results ] = app.search_random( Date.today )
    end
    print cgi.header( "text/html; charset=utf-8" )
    print app.to_html( data )

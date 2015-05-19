@@ -6,6 +6,7 @@ require "cgi"
 require "erb"
 require "pp"
 require "yaml"
+require "date"
 
 require_relative "../solr.rb"
 
@@ -33,8 +34,7 @@ module WebApp
          solr = WikipediaSolr.new
          @result = solr.search_fulltext( @query, { :start => @page * @per_page } )
       end
-      def search_random
-         seed = Time.now.to_i
+      def search_random( seed = Time.now.to_i )
          solr = WikipediaSolr.new
          @result = solr.search_fulltext( "*:*", { :sort => "random_#{ seed } desc" } )
       end
