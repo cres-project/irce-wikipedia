@@ -73,7 +73,7 @@
 <ul>
 <% results = data[ :results ][ "response" ] %>
 <% results[ "docs" ].each do |e| %>
-  <li><a href="<%=h @conf["mediawiki_path"] %><%=u e[ "title" ] %>"><%=h e[ "title" ] %></a>
+  <li><a href="<%=h @conf["mediawiki_path"] %><%=u e[ "title" ] %>"><%=h e[ "title" ].gsub(/_/, " ") %></a>
 <% end %>
 </ul>
 <% end %>
