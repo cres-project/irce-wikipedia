@@ -36,7 +36,7 @@ class WikipediaSolr
    end
 
    def reranking( response, params = { :alpha => 0.5 } )
-     alpha = params[ :alpha ]
+     alpha = params[ :alpha ] || 0.5
      docs = response[ "response" ][ "docs" ]
      results = []
      results << docs.shift
@@ -45,12 +45,14 @@ class WikipediaSolr
        docs.sort_by! do |e| 
          score = e[ "score" ].to_f
          category = e[ "category" ]
-	 if category.empty?
-	   cat_score = 0.1
-	 else
-	   cat_score = ( Set[ *previous_categories ] & Set[ *category ] ).size / category.size.to_f
+         cat_score = 0.1
+	 if not category.empty?
+	   cat_score = 1 - ( Set[ *previous_categories ] & Set[ *category ] ).size / category.size.to_f
          end
-         alpha * score * ( 1-alpha ) * cat_score
+         e[ "cat_score" ] = cat_score
+         reranking_score = alpha * score * ( 1-alpha ) * cat_score
+         e[ "reranking_score" ] = reranking_score
+         [ -1 * reranking_score, score ]
        end
        results << docs.shift
      end
