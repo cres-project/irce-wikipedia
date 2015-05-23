@@ -52,7 +52,7 @@ class WikipediaSolr
          e[ "cat_score" ] = cat_score
          reranking_score = alpha * score * ( 1-alpha ) * cat_score
          e[ "reranking_score" ] = reranking_score
-         [ -1 * reranking_score, score ]
+         [ -reranking_score, -score ]
        end
        results << docs.shift
      end
