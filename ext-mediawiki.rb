@@ -6,6 +6,18 @@ require "mysql2"
 require_relative "solr.rb"
 require_relative "mediawiki-parser.rb"
 
+def category( db, page, depth = 0 )
+  puts [ "*" * depth, page["page_title"], page["page_id"] ].join("\t")
+  sql = "select * from categorylinks where cl_from = #{ page["page_id"] }"
+  db.query( sql ).each do |row|
+    category = row[ "cl_to" ]
+    puts category
+    sql = "select page_id, page_title from page where page_title = '#{ category }' and page_namespace = 14"
+    parent_category = db.query( sql )
+    category( db, parent_category, depth + 1 )
+  end
+end
+
 if $0 == __FILE__
   indexer = WikipediaSolr.new
   conf = YAML.load( open "mysql.yml" )
