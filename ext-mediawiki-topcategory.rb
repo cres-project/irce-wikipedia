@@ -5,7 +5,7 @@ require_relative "ext-mediawiki.rb"
 
 def category( db, page, depth = 0, weight = 1.0 )
   result = {}
-  return result if depth > 5
+  return result if depth > 6
   #puts [ "*" * depth, page["page_title"], page["page_id"], weight ].join("\t")
   sql = "select * from categorylinks where cl_from = #{ page["page_id"] }"
   categories = db.query( sql )
@@ -30,6 +30,8 @@ end
 
 if $0 == __FILE__
   page_id = ARGV[0] || 5
+  page_id = page_id.to_i
+p page_id
   conf = YAML.load( open "mysql.yml" )
   db = Mysql2::Client.new( conf )
   pp category( db, { "page_id" => page_id, "page_title" => "アンパサンド" } )
