@@ -5,7 +5,7 @@ def usage
 Usage: ./run-topics.rb search-script topic-file
 
   Example:
-    ./run-topic.rb ext-ranking.rb IMine2-J-Queries.tsv
+    ./run-topic.rb ./ext-ranking.rb IMine2-J-Queries.tsv
 
 EOF
 end

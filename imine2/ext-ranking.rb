@@ -9,6 +9,6 @@ if $0 == __FILE__
   result = solr.search_fulltext(query, rows: 100)
   docs = result[ "response" ][ "docs" ]
   docs.each do |doc|
-    puts [doc["title"], doc["score"]].join("\t")
+    puts [doc["title"], doc["score"], doc["category"]].join("\t")
   end
 end
