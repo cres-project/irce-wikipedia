@@ -18,7 +18,7 @@ def category( db, page, depth = 0, weight = 1.0 )
   end
   categories.each do |row|
     category = row[ "cl_to" ]
-    sql = "select page_id, page_title from page where page_title = '#{ category }' and page_namespace = 14"
+    sql = "select page_id, page_title from page where page_title = '#{ db.escape category }' and page_namespace = 14"
     db.query( sql ).each do |parent_category|
       cat_title = parent_category[ "page_title" ].force_encoding( "utf-8" )
       case cat_title
