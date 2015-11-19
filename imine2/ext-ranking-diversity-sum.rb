@@ -19,7 +19,6 @@ class Hash
 end
 
 def sort_and_print(results, alpha = 0.5)
-  alpha ||= 0.5
   conf_path = File.join(File.dirname(__FILE__), "..", "mysql.yml")
   conf = YAML.load( open conf_path )
   db = Mysql2::Client.new( conf )
@@ -50,15 +49,10 @@ def sort_and_print(results, alpha = 0.5)
     #pp category_vector[final_results[-1]]
     #pp final_scores
     titles.each do |title|
-      scores[title] = []
-      final_results.each do |title2|
-        score = 0
-        ( category_vector[title].keys + category_vector[title2].keys ).uniq.each do |c|
-          score += category_vector[title][c].to_f * category_vector[title2][c].to_f
-        end
-        scores[title] << score
+      scores[title] = 0
+      ( category_vector[title].keys + final_scores.keys ).uniq.each do |c|
+        scores[title] += category_vector[title][c].to_f * final_scores[c].to_f
       end
-      scores[title] = scores[title].max
     end
     titles.sort_by!{|title| alpha * scores.normalize[title] - (1-alpha) * results.normalize[title] }
     final_results << titles.shift
