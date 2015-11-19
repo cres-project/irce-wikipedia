@@ -65,10 +65,14 @@ def sort_and_print(results, alpha = 0.5)
 end
 
 if $0 == __FILE__
+  if ARGV[0] =~ /\A-([\d\.]+)\Z/
+     alpha = $1.to_f
+     ARGV.shift
+  end
   results = {}
   ARGF.each do |line|
     if line =~ /\A##/
-      sort_and_print(results) unless results.empty?
+      sort_and_print(results, alpha) unless results.empty?
       puts line
       results = {}
     else
@@ -79,5 +83,5 @@ if $0 == __FILE__
       end
     end
   end
-  sort_and_print(results) unless results.empty?
+  sort_and_print(results, alpha) unless results.empty?
 end
