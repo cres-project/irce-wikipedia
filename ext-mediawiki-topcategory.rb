@@ -31,8 +31,9 @@ end
 if $0 == __FILE__
   page_id = ARGV[0] || 5
   page_id = page_id.to_i
-p page_id
-  conf = YAML.load( open "mysql.yml" )
+  #p page_id
+  conffile = File.join( File.dirname(__FILE__), "mysql.yml" )
+  conf = YAML.load( open conffile )
   db = Mysql2::Client.new( conf )
   pp category( db, { "page_id" => page_id, "page_title" => "アンパサンド" } )
 end
