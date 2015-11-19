@@ -5,10 +5,17 @@ require_relative "ext-mediawiki.rb"
 
 def category( db, page, depth = 0, weight = 1.0 )
   result = {}
-  return result if depth > 6
+  if depth > 6
+    result[:not_found] = weight 
+    return result
+  end
   #puts [ "*" * depth, page["page_title"], page["page_id"], weight ].join("\t")
   sql = "select * from categorylinks where cl_from = #{ page["page_id"] }"
   categories = db.query( sql )
+  unless categories.size > 0
+    result[:not_found] = weight 
+    return result
+  end
   categories.each do |row|
     category = row[ "cl_to" ]
     sql = "select page_id, page_title from page where page_title = '#{ category }' and page_namespace = 14"
