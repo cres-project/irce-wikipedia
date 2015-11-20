@@ -18,7 +18,7 @@ class Hash
   end
 end
 
-def sort_and_print(results, alpha = 0.5)
+def sort_and_print(results, alpha)
   alpha ||= 0.5
   conf_path = File.join(File.dirname(__FILE__), "..", "mysql.yml")
   conf = YAML.load( open conf_path )
